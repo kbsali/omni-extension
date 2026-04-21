@@ -3,7 +3,7 @@ import Popup from './Popup.svelte';
 import { DARK_DEFAULTS } from './storage';
 import { computeEnrolledDomains, diffRegistrations, type EnrolledSet } from './service';
 
-const CONTENT_SCRIPT_FILE = 'src/modules/dark/content.ts';
+const CONTENT_SCRIPT_FILE = 'src/modules/dark/content.js';
 
 async function reconcile(prev: EnrolledSet, next: EnrolledSet): Promise<EnrolledSet> {
   const diff = diffRegistrations(prev, next);

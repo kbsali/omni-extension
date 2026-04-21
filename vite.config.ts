@@ -16,6 +16,26 @@ export default defineConfig({
       '@modules': resolve(__dirname, 'src/modules'),
     },
   },
+  build: {
+    rollupOptions: {
+      input: {
+        // Dark content script is registered dynamically via
+        // chrome.scripting.registerContentScripts at runtime.
+        // CRXJS cannot statically discover it from the manifest, so we add it
+        // as an explicit Rollup input to ensure it is emitted to dist/ at a
+        // stable, hash-free path that matches the runtime registration.
+        'src/modules/dark/content': 'src/modules/dark/content.ts',
+      },
+      output: {
+        entryFileNames: (chunk) => {
+          if (chunk.name === 'src/modules/dark/content') {
+            return 'src/modules/dark/content.js';
+          }
+          return 'assets/[name]-[hash].js';
+        },
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'happy-dom',
