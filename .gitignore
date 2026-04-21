@@ -4,3 +4,6 @@ dist/
 coverage/
 *.log
 .vite/
+.env
+.env.local
+.env.*.local
