@@ -2,6 +2,7 @@ import type { OmniModule, BackgroundCtx } from '../../core/types';
 import Popup from './Popup.svelte';
 import { DARK_DEFAULTS } from './storage';
 import { computeEnrolledDomains, diffRegistrations, type EnrolledSet } from './service';
+import { MSG_REMOVE } from './messages';
 
 const CONTENT_SCRIPT_FILE = 'src/modules/dark/content.js';
 
@@ -42,11 +43,24 @@ async function reconcile(prev: EnrolledSet, next: EnrolledSet): Promise<Enrolled
   }
 
   // Broadcast removals to matching live tabs (best-effort).
-  for (const removed of diff.toUnregister) {
-    const tabs = await chrome.tabs.query({ url: [`*://*.${removed}/*`, `*://${removed}/*`] });
+  const removeMsg = { type: MSG_REMOVE };
+
+  if (diff.fullReregister && prev.mode === 'global') {
+    // Leaving global-dark mode: every tab potentially has the filter applied.
+    const tabs = await chrome.tabs.query({ url: ['http://*/*', 'https://*/*'] });
     for (const tab of tabs) {
       if (tab.id !== undefined) {
-        chrome.tabs.sendMessage(tab.id, { type: 'omni-dark/remove' }).catch(() => {});
+        chrome.tabs.sendMessage(tab.id, removeMsg).catch(() => {});
+      }
+    }
+  } else {
+    for (const removed of diff.toUnregister) {
+      if (removed === '__global__') continue; // handled above
+      const tabs = await chrome.tabs.query({ url: [`*://*.${removed}/*`, `*://${removed}/*`] });
+      for (const tab of tabs) {
+        if (tab.id !== undefined) {
+          chrome.tabs.sendMessage(tab.id, removeMsg).catch(() => {});
+        }
       }
     }
   }
@@ -63,19 +77,23 @@ const dark: OmniModule = {
   onBackground(ctx: BackgroundCtx) {
     let current: EnrolledSet = { mode: 'per-site', domains: [] };
 
-    ctx.getStorage().then((storage) => {
-      const initial = computeEnrolledDomains(storage);
-      reconcile(current, initial).then((applied) => {
-        current = applied;
-      });
-    });
+    const run = (next: EnrolledSet) => {
+      reconcile(current, next)
+        .then((applied) => {
+          current = applied;
+        })
+        .catch((err) => {
+          console.error('[omni-dark] reconcile failed:', err);
+          current = next; // avoid re-attempting failed ops on next diff
+        });
+    };
 
-    ctx.onStorageChange((next) => {
-      const nextSet = computeEnrolledDomains(next);
-      reconcile(current, nextSet).then((applied) => {
-        current = applied;
-      });
-    });
+    ctx
+      .getStorage()
+      .then((storage) => run(computeEnrolledDomains(storage)))
+      .catch((err) => console.error('[omni-dark] initial storage read failed:', err));
+
+    ctx.onStorageChange((next) => run(computeEnrolledDomains(next)));
   },
 };
 

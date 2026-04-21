@@ -1,4 +1,5 @@
 import { buildDarkCss, STYLE_ELEMENT_ID } from './css';
+import { MSG_REMOVE, MSG_UPDATE_BRIGHTNESS, type ContentMessage } from './messages';
 
 export function applyDarkFilter(brightness: number): void {
   document.documentElement.style.setProperty('--omni-brightness', String(brightness));
@@ -18,16 +19,12 @@ export function updateBrightness(brightness: number): void {
   document.documentElement.style.setProperty('--omni-brightness', String(brightness));
 }
 
-type ContentMessage =
-  | { type: 'omni-dark/update-brightness'; brightness: number }
-  | { type: 'omni-dark/remove' };
-
 // Wire up at module load (runs at document_start in the injected context).
 if (typeof chrome !== 'undefined' && chrome.runtime?.onMessage) {
   chrome.runtime.onMessage.addListener((msg: ContentMessage) => {
-    if (msg.type === 'omni-dark/update-brightness') {
+    if (msg.type === MSG_UPDATE_BRIGHTNESS) {
       updateBrightness(msg.brightness);
-    } else if (msg.type === 'omni-dark/remove') {
+    } else if (msg.type === MSG_REMOVE) {
       removeDarkFilter();
     }
   });

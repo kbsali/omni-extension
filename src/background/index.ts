@@ -4,9 +4,11 @@ import type { BackgroundCtx, OmniStorage } from '../core/types';
 
 async function ensureDefaults(): Promise<OmniStorage> {
   const existing = await readStorage();
+  // readStorage returns the literal DEFAULT_STORAGE reference when storage is empty.
+  // This identity check is intentional — do not change readStorage to return a copy
+  // without also updating this condition.
   if (existing === DEFAULT_STORAGE) {
     await writeStorage(DEFAULT_STORAGE);
-    return DEFAULT_STORAGE;
   }
   return existing;
 }
