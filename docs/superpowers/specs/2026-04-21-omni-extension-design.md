@@ -25,7 +25,7 @@ The first shipped module is **Dark Mode**: a per-site dark-mode toggle that pers
 - Vitest unit tests with mocked `chrome.*` APIs
 
 **Out of scope for v1:**
-- Other modules (Tabs, Cookies, Redirects, X Dim, Music Finder) — scaffolding supports them; implementations come later as separate specs
+- Other modules (Cookies, Smiley keyboard, GDPR, Youtube customizer) — scaffolding supports them; implementations come later as separate specs
 - Dark-Reader-style dynamic color analysis (deferred; v1 uses simple CSS filter invert)
 - Playwright E2E tests (deferred per user preference for personal projects)
 - Keyboard shortcuts, action badge indicators
@@ -273,11 +273,10 @@ These should be listed in `README.md` so users aren't surprised:
 
 The architecture anticipates these without implementing them:
 
-- **Tabs** — auto-close inactive tabs with host-based exclusions
 - **Cookies** — per-site cookie editor / nuker
-- **Redirects** — trace redirect chains
-- **X Dim** — X.com background override
-- **Music Finder** — tab audio capture + song ID
+- **Smiley keyboard** — find and copy emoji through the keyboard
+- **GDPR** — Auto dismiss cookie consent popups
+- **Youtube customizer** — several youtube tweaks
 
 Each will be specced separately. The module contract above is the stable API they plug into.
 
