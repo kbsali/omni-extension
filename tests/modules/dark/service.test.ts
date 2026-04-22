@@ -4,13 +4,14 @@ import {
   computeEnrolledDomains,
   diffRegistrations,
 } from '../../../src/modules/dark/service';
+import { COOKIES_DEFAULTS } from '../../../src/modules/cookies/storage';
 import type { OmniStorage } from '../../../src/core/types';
 
 const baseStorage = (): OmniStorage => ({
   version: 1,
   modules: {
     dark: { defaultMode: 'light', brightness: 1.0, sites: {} },
-    cookies: {},
+    cookies: { ...COOKIES_DEFAULTS },
   },
 });
 
