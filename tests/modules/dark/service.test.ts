@@ -10,6 +10,7 @@ const baseStorage = (): OmniStorage => ({
   version: 1,
   modules: {
     dark: { defaultMode: 'light', brightness: 1.0, sites: {} },
+    cookies: {},
   },
 });
 
