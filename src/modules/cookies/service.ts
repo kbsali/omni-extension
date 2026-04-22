@@ -34,3 +34,8 @@ export function toExportFilename(domain: string, date: Date): string {
   const d = pad2(date.getDate());
   return `cookies-${domain}-${y}-${m}-${d}.json`;
 }
+
+export function toExportJson(cookies: readonly chrome.cookies.Cookie[]): string {
+  const sorted = [...cookies].sort((a, b) => a.name.localeCompare(b.name));
+  return JSON.stringify(sorted, null, 2);
+}

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildCookieUrl, parseExpires, formatExpiresInput, toExportFilename } from '../../../src/modules/cookies/service';
+import { buildCookieUrl, parseExpires, formatExpiresInput, toExportFilename, toExportJson } from '../../../src/modules/cookies/service';
 
 describe('modules/cookies/service — buildCookieUrl', () => {
   it('uses https when secure=true', () => {
@@ -75,5 +75,37 @@ describe('modules/cookies/service — toExportFilename', () => {
   it('zero-pads month and day', () => {
     const date = new Date(2026, 0, 5); // 5 January 2026
     expect(toExportFilename('example.org', date)).toBe('cookies-example.org-2026-01-05.json');
+  });
+});
+
+describe('modules/cookies/service — toExportJson', () => {
+  const makeCookie = (name: string): chrome.cookies.Cookie => ({
+    name,
+    value: 'v-' + name,
+    domain: 'x.com',
+    path: '/',
+    secure: true,
+    httpOnly: false,
+    session: true,
+    sameSite: 'lax',
+    storeId: '0',
+    hostOnly: true,
+  });
+
+  it('returns pretty-printed JSON', () => {
+    const out = toExportJson([makeCookie('a')]);
+    expect(out).toContain('\n');
+    expect(out).toContain('  ');
+    expect(JSON.parse(out)).toEqual([makeCookie('a')]);
+  });
+
+  it('sorts cookies alphabetically by name', () => {
+    const cookies = [makeCookie('zeta'), makeCookie('alpha'), makeCookie('mid')];
+    const parsed = JSON.parse(toExportJson(cookies)) as chrome.cookies.Cookie[];
+    expect(parsed.map((c) => c.name)).toEqual(['alpha', 'mid', 'zeta']);
+  });
+
+  it('returns "[]" for empty input', () => {
+    expect(toExportJson([])).toBe('[]');
   });
 });
