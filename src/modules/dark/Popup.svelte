@@ -4,7 +4,6 @@
   import { extractETLD1 } from '../../core/domain';
   import { cycleSiteMode, setDefaultMode, setBrightness } from './storage';
   import { resolveMode } from './service';
-  import { MSG_UPDATE_BRIGHTNESS } from './messages';
   import type { OmniStorage } from '../../core/types';
 
   let storage = $state<OmniStorage>(DEFAULT_STORAGE);
@@ -38,16 +37,6 @@
   function onBrightness(e: Event) {
     const value = Number((e.target as HTMLInputElement).value) / 100;
     update(setBrightness(storage, value));
-    chrome.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-      const tab = tabs[0];
-      if (tab?.id !== undefined) {
-        chrome.tabs
-          .sendMessage(tab.id, { type: MSG_UPDATE_BRIGHTNESS, brightness: value })
-          .catch(() => {
-            /* tab has no content script — expected, suppress */
-          });
-      }
-    });
   }
 </script>
 

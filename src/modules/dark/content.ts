@@ -1,16 +1,19 @@
 import { buildDarkCss, STYLE_ELEMENT_ID } from './css';
-import { MSG_REMOVE, MSG_UPDATE_BRIGHTNESS, type ContentMessage } from './messages';
+import { extractETLD1 } from '../../core/domain';
+import { resolveMode } from './service';
+import { DEFAULT_STORAGE } from '../../core/storage';
+import type { OmniStorage } from '../../core/types';
 
 console.log('[omni/dark/content] script loaded on', location.href);
 
 export function applyDarkFilter(brightness: number): void {
   document.documentElement.style.setProperty('--omni-brightness', String(brightness));
   if (document.getElementById(STYLE_ELEMENT_ID)) return;
-  console.log('[omni/dark/content] applying filter', brightness);
   const style = document.createElement('style');
   style.id = STYLE_ELEMENT_ID;
   style.textContent = buildDarkCss();
   (document.head ?? document.documentElement).appendChild(style);
+  console.log('[omni/dark/content] applying filter', brightness);
 }
 
 export function removeDarkFilter(): void {
@@ -22,24 +25,36 @@ export function updateBrightness(brightness: number): void {
   document.documentElement.style.setProperty('--omni-brightness', String(brightness));
 }
 
-// Wire up at module load (runs at document_start in the injected context).
-if (typeof chrome !== 'undefined' && chrome.runtime?.onMessage) {
-  chrome.runtime.onMessage.addListener((msg: ContentMessage) => {
-    if (msg.type === MSG_UPDATE_BRIGHTNESS) {
-      updateBrightness(msg.brightness);
-    } else if (msg.type === MSG_REMOVE) {
-      removeDarkFilter();
-    }
-  });
+function reconcileFromStorage(storage: OmniStorage): void {
+  const domain = extractETLD1(location.href);
+  if (!domain) return;
+  const mode = resolveMode(storage, domain);
+  if (mode === 'dark') {
+    applyDarkFilter(storage.modules.dark.brightness);
+  } else {
+    removeDarkFilter();
+  }
 }
 
-// Read brightness from storage and apply immediately.
+// Side-effect setup — runs at document_start in real Chrome.
 if (typeof chrome !== 'undefined' && chrome.storage?.sync) {
-  const result = chrome.storage.sync.get('omni') as unknown;
-  if (result && typeof (result as Promise<unknown>).then === 'function') {
-    (result as Promise<{ omni?: { modules?: { dark?: { brightness?: number } } } }>).then((r) => {
-      const brightness = r?.omni?.modules?.dark?.brightness ?? 1.0;
-      applyDarkFilter(brightness);
+  // Initial application from current storage.
+  const initial = chrome.storage.sync.get('omni') as unknown;
+  if (initial && typeof (initial as Promise<unknown>).then === 'function') {
+    (initial as Promise<{ omni?: OmniStorage }>).then((result) => {
+      const storage = result.omni ?? DEFAULT_STORAGE;
+      reconcileFromStorage(storage);
+    });
+  }
+
+  // React to storage changes (popup toggle, brightness slider, default flip).
+  if (chrome.storage?.onChanged) {
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+      if (areaName !== 'sync') return;
+      const change = changes['omni'];
+      if (!change) return;
+      const next = (change.newValue as OmniStorage | undefined) ?? DEFAULT_STORAGE;
+      reconcileFromStorage(next);
     });
   }
 }

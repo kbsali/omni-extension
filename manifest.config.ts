@@ -8,6 +8,14 @@ export default defineManifest({
   description: 'Multi-tool browser extension (Dark Mode + future modules)',
   permissions: ['storage', 'scripting', 'activeTab', 'tabs'],
   host_permissions: ['<all_urls>'],
+  content_scripts: [
+    {
+      matches: ['<all_urls>'],
+      js: ['src/modules/dark/content.ts'],
+      run_at: 'document_start',
+      all_frames: false,
+    },
+  ],
   background: {
     service_worker: 'src/background/index.ts',
     type: 'module',
