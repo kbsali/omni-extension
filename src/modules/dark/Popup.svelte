@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { readStorage, writeStorage, DEFAULT_STORAGE } from '../../core/storage';
   import { extractETLD1 } from '../../core/domain';
-  import { cycleSiteMode, setDefaultMode, setBrightness } from './storage';
+  import { setSiteMode, setDefaultMode, setBrightness } from './storage';
   import { resolveMode } from './service';
   import type { OmniStorage } from '../../core/types';
 
@@ -27,7 +27,11 @@
 
   function onToggleSite() {
     if (!currentDomain) return;
-    update(cycleSiteMode(storage, currentDomain));
+    const current = resolveMode(storage, currentDomain);
+    const next = current === 'dark' ? 'light' : 'dark';
+    const defaultMode = storage.modules.dark.defaultMode;
+    const siteValue = next === defaultMode ? 'default' : next;
+    update(setSiteMode(storage, currentDomain, siteValue));
   }
 
   function onToggleGlobal() {
