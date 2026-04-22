@@ -241,7 +241,7 @@ Document in `src/modules/cookies/README.md`:
 2. **Value + expires only.** Advanced fields (`path`, `domain`, `httpOnly`, `secure`, `sameSite`) are read-only in the editor.
 3. **No live updates.** If a site sets a cookie while the popup is open, click Refresh to see it.
 4. **No import.** Exported JSON is inspection-only in v1.
-5. **`httpOnly` caveat.** Chrome may reject setting some `httpOnly` cookies from an extension context; the module surfaces the error inline but cannot override it.
+5. **Set failures surfaced inline.** `chrome.cookies.set` rejects on invariant violations (e.g., `secure: true` with an `http://` URL, `sameSite: 'none'` without `secure: true`, malformed path). The module shows the error under the row; the user has to resolve the conflict by changing `expires` / `value` in ways that keep the existing flags valid — advanced flags are not editable in v1.
 6. **Default cookie store only.** Incognito-specific stores are not selectable; cookies from non-default stores are preserved on round-trip but not explicitly filterable.
 
 ## 9. Open Questions Deferred to Plan Phase
