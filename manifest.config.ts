@@ -6,7 +6,7 @@ export default defineManifest({
   name: 'Omni Extension',
   version: pkg.version,
   description: 'Multi-tool browser extension (Dark Mode + future modules)',
-  permissions: ['storage', 'scripting', 'activeTab', 'tabs'],
+  permissions: ['storage', 'scripting', 'activeTab', 'tabs', 'cookies'],
   host_permissions: ['<all_urls>'],
   content_scripts: [
     {
