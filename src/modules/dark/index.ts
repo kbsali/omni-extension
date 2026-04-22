@@ -8,37 +8,41 @@ const CONTENT_SCRIPT_FILE = 'src/modules/dark/content.js';
 
 async function reconcile(prev: EnrolledSet, next: EnrolledSet): Promise<EnrolledSet> {
   const diff = diffRegistrations(prev, next);
+  console.log('[omni/dark] reconcile', { prev, next, diff });
 
   if (diff.fullReregister || diff.toUnregister.length > 0) {
     const existing = await chrome.scripting.getRegisteredContentScripts();
     const darkIds = existing.filter((s) => s.id.startsWith('omni-dark')).map((s) => s.id);
     if (darkIds.length > 0) {
+      console.log('[omni/dark] unregistering', darkIds);
       await chrome.scripting.unregisterContentScripts({ ids: darkIds });
     }
   }
 
   if (next.mode === 'global') {
     const excludeMatches = next.excludeDomains.map((d) => `*://*.${d}/*`);
-    await chrome.scripting.registerContentScripts([
+    const registrations = [
       {
         id: 'omni-dark-global',
         js: [CONTENT_SCRIPT_FILE],
         matches: ['<all_urls>'],
         excludeMatches,
-        runAt: 'document_start',
+        runAt: 'document_start' as const,
       },
-    ]);
+    ];
+    console.log('[omni/dark] registering', registrations);
+    await chrome.scripting.registerContentScripts(registrations);
   } else {
     const toRegister = diff.fullReregister ? next.domains : diff.toRegister.mode === 'per-site' ? diff.toRegister.domains : [];
     if (toRegister.length > 0) {
-      await chrome.scripting.registerContentScripts(
-        toRegister.map((domain) => ({
-          id: `omni-dark-${domain}`,
-          js: [CONTENT_SCRIPT_FILE],
-          matches: [`*://*.${domain}/*`, `*://${domain}/*`],
-          runAt: 'document_start' as const,
-        })),
-      );
+      const registrations = toRegister.map((domain) => ({
+        id: `omni-dark-${domain}`,
+        js: [CONTENT_SCRIPT_FILE],
+        matches: [`*://*.${domain}/*`, `*://${domain}/*`],
+        runAt: 'document_start' as const,
+      }));
+      console.log('[omni/dark] registering', registrations);
+      await chrome.scripting.registerContentScripts(registrations);
     }
   }
 
@@ -75,6 +79,7 @@ const dark: OmniModule = {
   Popup,
   storageDefaults: { ...DARK_DEFAULTS },
   onBackground(ctx: BackgroundCtx) {
+    console.log('[omni/dark] onBackground hook installed');
     let current: EnrolledSet = { mode: 'per-site', domains: [] };
 
     const run = (next: EnrolledSet) => {

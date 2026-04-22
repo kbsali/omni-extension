@@ -21,6 +21,7 @@
   );
 
   async function update(next: OmniStorage) {
+    console.log('[omni/dark/popup] writing storage', next.modules.dark);
     storage = next;
     await writeStorage(next);
   }

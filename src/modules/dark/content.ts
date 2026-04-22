@@ -1,9 +1,12 @@
 import { buildDarkCss, STYLE_ELEMENT_ID } from './css';
 import { MSG_REMOVE, MSG_UPDATE_BRIGHTNESS, type ContentMessage } from './messages';
 
+console.log('[omni/dark/content] script loaded on', location.href);
+
 export function applyDarkFilter(brightness: number): void {
   document.documentElement.style.setProperty('--omni-brightness', String(brightness));
   if (document.getElementById(STYLE_ELEMENT_ID)) return;
+  console.log('[omni/dark/content] applying filter', brightness);
   const style = document.createElement('style');
   style.id = STYLE_ELEMENT_ID;
   style.textContent = buildDarkCss();
