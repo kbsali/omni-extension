@@ -19,6 +19,7 @@
   let errors = $state<Record<string, string>>({});
   let draft = $state<Draft | null>(null);
   let draftError = $state<string | null>(null);
+  let globalError = $state<string | null>(null);
   let loading = $state(false);
 
   function cookieKey(c: chrome.cookies.Cookie): string {
@@ -36,6 +37,7 @@
       const all = await chrome.cookies.getAll({ domain });
       cookies = sortCookies(all);
       errors = {};
+      globalError = null;
     } finally {
       loading = false;
     }
@@ -81,8 +83,6 @@
   }
 
   function describeError(err: unknown): string {
-    const runtimeErr = chrome.runtime.lastError?.message;
-    if (runtimeErr) return `Failed: ${runtimeErr}`;
     if (err instanceof Error) return `Failed: ${err.message}`;
     return 'Failed: unknown error';
   }
@@ -155,7 +155,6 @@
         name: draft.name.trim(),
         value: draft.value,
         path: '/',
-        domain,
         ...(expirationDate !== undefined ? { expirationDate } : {}),
       });
       if (!result) {
@@ -176,11 +175,16 @@
     if (n === 0) return;
     const ok = confirm(`Delete all ${n} cookies for ${domain}?`);
     if (!ok) return;
-    await Promise.all(
+    globalError = null;
+    const results = await Promise.allSettled(
       cookies.map((c) =>
         chrome.cookies.remove({ url: buildCookieUrl(c), name: c.name, storeId: c.storeId }),
       ),
     );
+    const failed = results.filter((r) => r.status === 'rejected').length;
+    if (failed > 0) {
+      globalError = `Deleted ${n - failed} of ${n} cookies; ${failed} failed`;
+    }
     await loadCookies();
   }
 
@@ -243,7 +247,7 @@
         {@const valueVal = edits[key]?.value ?? c.value}
         {@const expiresVal = edits[key]?.expires ?? formatExpiresInput(c.expirationDate)}
         <li class="row" class:open>
-          <button class="head" onclick={() => toggle(key)}>
+          <button class="head" aria-expanded={open} onclick={() => toggle(key)}>
             <span class="arrow">{open ? '▾' : '▸'}</span>
             <span class="name">{c.name}</span>
           </button>
@@ -284,6 +288,9 @@
       {/each}
     </ul>
 
+    {#if globalError}
+      <div class="banner-error">{globalError}</div>
+    {/if}
     {#if !loading && cookies.length === 0 && !draft}
       <div class="empty">No cookies for {domain}</div>
     {/if}
@@ -328,6 +335,7 @@
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn.danger { border-color: #5a2a2a; color: #e88; }
   .error { color: #f77; font-size: 11px; }
+  .banner-error { margin: 8px 12px; padding: 6px 8px; border-radius: 4px; background: #3a1a1a; color: #f99; font-size: 12px; }
   .empty { padding: 24px; text-align: center; opacity: 0.5; }
   footer { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid #2a2a30; }
   .foot { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; background: transparent; border: none; color: inherit; cursor: pointer; font-size: 11px; }
