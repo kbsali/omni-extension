@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildCookieUrl, parseExpires, formatExpiresInput } from '../../../src/modules/cookies/service';
+import { buildCookieUrl, parseExpires, formatExpiresInput, toExportFilename } from '../../../src/modules/cookies/service';
 
 describe('modules/cookies/service — buildCookieUrl', () => {
   it('uses https when secure=true', () => {
@@ -63,5 +63,17 @@ describe('modules/cookies/service — formatExpiresInput', () => {
     const seconds = parseExpires(input);
     expect(seconds).toBeDefined();
     expect(formatExpiresInput(seconds)).toBe(input);
+  });
+});
+
+describe('modules/cookies/service — toExportFilename', () => {
+  it('formats as cookies-<domain>-<YYYY-MM-DD>.json', () => {
+    const date = new Date(2026, 3, 22, 9, 30); // 22 April 2026 local
+    expect(toExportFilename('x.com', date)).toBe('cookies-x.com-2026-04-22.json');
+  });
+
+  it('zero-pads month and day', () => {
+    const date = new Date(2026, 0, 5); // 5 January 2026
+    expect(toExportFilename('example.org', date)).toBe('cookies-example.org-2026-01-05.json');
   });
 });

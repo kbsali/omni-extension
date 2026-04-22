@@ -27,3 +27,10 @@ export function formatExpiresInput(expirationDate: number | undefined): string {
     `T${pad2(d.getHours())}:${pad2(d.getMinutes())}`
   );
 }
+
+export function toExportFilename(domain: string, date: Date): string {
+  const y = date.getFullYear();
+  const m = pad2(date.getMonth() + 1);
+  const d = pad2(date.getDate());
+  return `cookies-${domain}-${y}-${m}-${d}.json`;
+}
