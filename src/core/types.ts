@@ -1,4 +1,5 @@
 import type { Component } from 'svelte';
+import type { CookiesStorage } from '../modules/cookies/storage';
 
 export type Mode = 'dark' | 'light' | 'default';
 
@@ -12,6 +13,7 @@ export interface OmniStorage {
   version: 1;
   modules: {
     dark: DarkStorage;
+    cookies: CookiesStorage;
   };
 }
 

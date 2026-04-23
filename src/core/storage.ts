@@ -1,4 +1,5 @@
 import type { OmniStorage } from './types';
+import { COOKIES_DEFAULTS } from '../modules/cookies/storage';
 
 const STORAGE_KEY = 'omni';
 
@@ -10,6 +11,7 @@ export const DEFAULT_STORAGE: OmniStorage = {
       brightness: 1.0,
       sites: {},
     },
+    cookies: { ...COOKIES_DEFAULTS },
   },
 };
 
