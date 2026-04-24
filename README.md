@@ -1,6 +1,6 @@
 # Omni Extension
 
-Multi-tool browser extension (Manifest V3). First module: **Dark Mode** with per-site overrides.
+Multi-tool browser extension (Manifest V3).
 
 ## Install (dev)
 
@@ -41,10 +41,18 @@ Per-site (eTLD+1) dark mode via CSS filter inversion.
 - Adjust brightness 50%–100%
 - Settings sync via `chrome.storage.sync`
 
+### Cookies
+
+Lightweight cookie viewer/editor scoped to the current tab's eTLD+1. See [`src/modules/cookies/README.md`](src/modules/cookies/README.md).
+
+### Emoji
+
+Keyboard-driven emoji picker. Type to fuzzy-filter ~1900 emojis, arrow-key to navigate, Enter to copy. Recently used emojis are remembered and shown first. See [`src/modules/emoji/README.md`](src/modules/emoji/README.md).
+
 ### Known limitations
 
-- Uses `filter: invert(1) hue-rotate(180deg)` — not a color-aware dark mode. Looks ugly on already-dark sites, sites with heavy gradients/shadows, and can break `position: fixed` sticky headers on some layouts.
-- Per-site rules use eTLD+1 granularity. `docs.github.com` and `github.com` share one setting.
+- Dark mode uses `filter: invert(1) hue-rotate(180deg)` — not a color-aware dark mode.
+- Dark mode per-site rules use eTLD+1 granularity.
 - No E2E tests yet.
 
 ## Architecture
