@@ -27,7 +27,7 @@ describe('core/registry', () => {
 });
 
 describe('core/registry — shortcut / manifest parity', () => {
-  const manifestCommands = (manifest.commands ?? {}) as Record<
+  const manifestCommands = ((manifest as any).commands ?? {}) as Record<
     string,
     { suggested_key?: { default?: string }; description?: string }
   >;
@@ -51,13 +51,10 @@ describe('core/registry — shortcut / manifest parity', () => {
 
   it('every manifest command is owned by exactly one module', () => {
     for (const commandName of Object.keys(manifestCommands)) {
-      const owners = modulesWithShortcut.filter(
-        (m) => m.shortcut!.commandName === commandName,
+      const owners = modulesWithShortcut.filter((m) => m.shortcut!.commandName === commandName);
+      expect(owners.length, `orphan or duplicate owner for manifest command ${commandName}`).toBe(
+        1,
       );
-      expect(
-        owners.length,
-        `orphan or duplicate owner for manifest command ${commandName}`,
-      ).toBe(1);
     }
   });
 });

@@ -19,6 +19,7 @@
 The popup handoff uses `chrome.storage.session` so the signal doesn't survive a browser restart. Atomic "read-and-clear" is part of the contract.
 
 **Files:**
+
 - Create: `src/core/session.ts`
 - Create: `tests/core/session.test.ts`
 
@@ -38,8 +39,7 @@ beforeEach(() => {
   sessionStore.clear();
   // @ts-expect-error — augmenting the sinon-chrome mock at runtime
   chrome.storage.session = {
-    get: async (key: string) =>
-      sessionStore.has(key) ? { [key]: sessionStore.get(key) } : {},
+    get: async (key: string) => (sessionStore.has(key) ? { [key]: sessionStore.get(key) } : {}),
     set: async (obj: Record<string, unknown>) => {
       for (const [k, v] of Object.entries(obj)) sessionStore.set(k, v);
     },
@@ -113,6 +113,7 @@ cd /home/kevin/workspace/perso/omni-extension && git add src/core/session.ts tes
 Pure function shared by the dark popup button and the new keyboard shortcut.
 
 **Files:**
+
 - Modify: `src/modules/dark/service.ts`
 - Modify: `tests/modules/dark/service.test.ts`
 
@@ -173,10 +174,7 @@ import type { Mode, OmniStorage } from '../../core/types';
 Then append this function at the end of the file:
 
 ```ts
-export function nextSiteValueOnToggle(
-  current: Mode,
-  defaultMode: 'dark' | 'light',
-): Mode {
+export function nextSiteValueOnToggle(current: Mode, defaultMode: 'dark' | 'light'): Mode {
   const effective = current === 'dark' || current === 'light' ? current : defaultMode;
   const nextEffective = effective === 'dark' ? 'light' : 'dark';
   return nextEffective === defaultMode ? 'default' : nextEffective;
@@ -204,6 +202,7 @@ cd /home/kevin/workspace/perso/omni-extension && git add src/modules/dark/servic
 Type-only extension; no tests.
 
 **Files:**
+
 - Modify: `src/core/types.ts`
 
 - [ ] **Step 1: Replace the contents of `src/core/types.ts`**
@@ -289,6 +288,7 @@ cd /home/kevin/workspace/perso/omni-extension && git add src/core/types.ts && gi
 The dispatcher is split into two exports: `buildDispatcher` is pure (takes a module list + a ctx, returns an `async (command) => void`), and `wireShortcuts` is glue that constructs the real ctx and registers a `chrome.commands.onCommand` listener. Tests cover `buildDispatcher` directly.
 
 **Files:**
+
 - Create: `src/background/shortcuts.ts`
 - Create: `tests/background/shortcuts.test.ts`
 
@@ -446,8 +446,9 @@ export function buildDispatcher(
 ): (command: string) => Promise<void> {
   const byCommand = new Map(
     modules
-      .filter((m): m is OmniModule & { shortcut: NonNullable<OmniModule['shortcut']> } =>
-        m.shortcut !== undefined,
+      .filter(
+        (m): m is OmniModule & { shortcut: NonNullable<OmniModule['shortcut']> } =>
+          m.shortcut !== undefined,
       )
       .map((m) => [m.shortcut.commandName, m.shortcut]),
   );
@@ -493,6 +494,7 @@ cd /home/kevin/workspace/perso/omni-extension && git add src/background/shortcut
 Adds `toggleDarkForCurrentSite` + `shortcut` to `dark/index.ts`. Refactors `dark/Popup.svelte`'s `onToggleSite` to call the new `nextSiteValueOnToggle` helper so both paths share identical logic.
 
 **Files:**
+
 - Modify: `src/modules/dark/index.ts`
 - Modify: `src/modules/dark/Popup.svelte`
 
@@ -543,31 +545,31 @@ export default dark;
 Open `src/modules/dark/Popup.svelte`. Find the `onToggleSite` function:
 
 ```ts
-  function onToggleSite() {
-    if (!currentDomain) return;
-    const current = resolveMode(storage, currentDomain);
-    const next = current === 'dark' ? 'light' : 'dark';
-    const defaultMode = storage.modules.dark.defaultMode;
-    const siteValue = next === defaultMode ? 'default' : next;
-    update(setSiteMode(storage, currentDomain, siteValue));
-  }
+function onToggleSite() {
+  if (!currentDomain) return;
+  const current = resolveMode(storage, currentDomain);
+  const next = current === 'dark' ? 'light' : 'dark';
+  const defaultMode = storage.modules.dark.defaultMode;
+  const siteValue = next === defaultMode ? 'default' : next;
+  update(setSiteMode(storage, currentDomain, siteValue));
+}
 ```
 
 Replace it with:
 
 ```ts
-  function onToggleSite() {
-    if (!currentDomain) return;
-    const current = storage.modules.dark.sites[currentDomain] ?? 'default';
-    const siteValue = nextSiteValueOnToggle(current, storage.modules.dark.defaultMode);
-    update(setSiteMode(storage, currentDomain, siteValue));
-  }
+function onToggleSite() {
+  if (!currentDomain) return;
+  const current = storage.modules.dark.sites[currentDomain] ?? 'default';
+  const siteValue = nextSiteValueOnToggle(current, storage.modules.dark.defaultMode);
+  update(setSiteMode(storage, currentDomain, siteValue));
+}
 ```
 
 Then add the import at the top of the script block, next to the existing `resolveMode` import:
 
 ```ts
-  import { resolveMode, nextSiteValueOnToggle } from './service';
+import { resolveMode, nextSiteValueOnToggle } from './service';
 ```
 
 (The `resolveMode` import should already exist; combine the two exports onto one import line. Remove it if it's now unused — `resolveMode` is still used below for `effectiveMode`, so keep it.)
@@ -594,6 +596,7 @@ cd /home/kevin/workspace/perso/omni-extension && git add src/modules/dark/index.
 Both delegate to `ctx.openPopupFocusedOn`. Two small changes.
 
 **Files:**
+
 - Modify: `src/modules/emoji/index.ts`
 - Modify: `src/modules/cookies/index.ts`
 
@@ -671,6 +674,7 @@ cd /home/kevin/workspace/perso/omni-extension && git add src/modules/emoji/index
 Declares the 3 manifest commands so Chrome registers the shortcuts, then wires the dispatcher listener from the background service worker.
 
 **Files:**
+
 - Modify: `manifest.config.ts`
 - Modify: `src/background/index.ts`
 
@@ -789,6 +793,7 @@ cd /home/kevin/workspace/perso/omni-extension && git add manifest.config.ts src/
 The popup reads the session-storage signal on mount and activates the matching module tab.
 
 **Files:**
+
 - Modify: `src/popup/App.svelte`
 
 - [ ] **Step 1: Replace the contents of `src/popup/App.svelte`**
@@ -860,6 +865,7 @@ cd /home/kevin/workspace/perso/omni-extension && git add src/popup/App.svelte &&
 Assert that every module's `shortcut.suggestedKey` matches the manifest's `suggested_key.default`, and every manifest command has a matching module. Prevents module/manifest drift.
 
 **Files:**
+
 - Modify: `tests/core/registry.test.ts`
 
 - [ ] **Step 1: Replace `tests/core/registry.test.ts`**
@@ -918,13 +924,10 @@ describe('core/registry — shortcut / manifest parity', () => {
 
   it('every manifest command is owned by exactly one module', () => {
     for (const commandName of Object.keys(manifestCommands)) {
-      const owners = modulesWithShortcut.filter(
-        (m) => m.shortcut!.commandName === commandName,
+      const owners = modulesWithShortcut.filter((m) => m.shortcut!.commandName === commandName);
+      expect(owners.length, `orphan or duplicate owner for manifest command ${commandName}`).toBe(
+        1,
       );
-      expect(
-        owners.length,
-        `orphan or duplicate owner for manifest command ${commandName}`,
-      ).toBe(1);
     }
   });
 });
@@ -961,6 +964,7 @@ cd /home/kevin/workspace/perso/omni-extension && git add tests/core/registry.tes
 Document the shortcuts and the 4-command cap in the root README.
 
 **Files:**
+
 - Modify: `README.md`
 
 - [ ] **Step 1: Update `README.md`**
@@ -972,10 +976,10 @@ Open `README.md`. Find the `## Features` section. Right before `### Known limita
 
 Each module ships a keyboard shortcut. Chrome lets you remap them at `chrome://extensions/shortcuts`.
 
-| Shortcut | Action |
-| --- | --- |
-| `Alt+Shift+E` | Open popup on Emoji tab, search focused |
-| `Alt+Shift+K` | Open popup on Cookies tab |
+| Shortcut      | Action                                       |
+| ------------- | -------------------------------------------- |
+| `Alt+Shift+E` | Open popup on Emoji tab, search focused      |
+| `Alt+Shift+K` | Open popup on Cookies tab                    |
 | `Alt+Shift+D` | Toggle dark mode for current site (no popup) |
 
 Chrome caps user-configurable shortcuts at 4 per extension. One slot is free for a future module.

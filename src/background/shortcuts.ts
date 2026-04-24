@@ -34,8 +34,9 @@ export function buildDispatcher(
 ): (command: string) => Promise<void> {
   const byCommand = new Map(
     modules
-      .filter((m): m is OmniModule & { shortcut: NonNullable<OmniModule['shortcut']> } =>
-        m.shortcut !== undefined,
+      .filter(
+        (m): m is OmniModule & { shortcut: NonNullable<OmniModule['shortcut']> } =>
+          m.shortcut !== undefined,
       )
       .map((m) => [m.shortcut.commandName, m.shortcut]),
   );

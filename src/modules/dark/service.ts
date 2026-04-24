@@ -69,10 +69,7 @@ function allDomainIds(set: EnrolledSet): string[] {
   return [...set.domains];
 }
 
-export function nextSiteValueOnToggle(
-  current: Mode,
-  defaultMode: 'dark' | 'light',
-): Mode {
+export function nextSiteValueOnToggle(current: Mode, defaultMode: 'dark' | 'light'): Mode {
   const effective = current === 'dark' || current === 'light' ? current : defaultMode;
   const nextEffective = effective === 'dark' ? 'light' : 'dark';
   return nextEffective === defaultMode ? 'default' : nextEffective;

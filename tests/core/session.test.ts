@@ -11,8 +11,7 @@ beforeEach(() => {
   // overloaded StorageArea signature since sinon-chrome doesn't ship
   // chrome.storage.session and we only need our helpers' happy path.
   chrome.storage.session = {
-    get: async (key: string) =>
-      sessionStore.has(key) ? { [key]: sessionStore.get(key) } : {},
+    get: async (key: string) => (sessionStore.has(key) ? { [key]: sessionStore.get(key) } : {}),
     set: async (obj: Record<string, unknown>) => {
       for (const [k, v] of Object.entries(obj)) sessionStore.set(k, v);
     },

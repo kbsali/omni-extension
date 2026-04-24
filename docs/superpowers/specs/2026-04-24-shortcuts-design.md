@@ -10,11 +10,11 @@ Per-module keyboard shortcuts for the Omni Extension. Each module declares its o
 
 Default bindings:
 
-| Module | Shortcut | Action |
-| --- | --- | --- |
-| Emoji | `Alt+Shift+E` | Open popup on Emoji tab, search input auto-focused |
-| Cookies | `Alt+Shift+K` | Open popup on Cookies tab |
-| Dark | `Alt+Shift+D` | Toggle dark mode for the current site (no popup) |
+| Module  | Shortcut      | Action                                             |
+| ------- | ------------- | -------------------------------------------------- |
+| Emoji   | `Alt+Shift+E` | Open popup on Emoji tab, search input auto-focused |
+| Cookies | `Alt+Shift+K` | Open popup on Cookies tab                          |
+| Dark    | `Alt+Shift+D` | Toggle dark mode for the current site (no popup)   |
 
 Per-module actions (not uniform popup-opening) are chosen so that high-frequency actions — toggling dark mode — don't require a UI roundtrip.
 
@@ -84,9 +84,9 @@ export interface ShortcutCtx {
 }
 
 export interface OmniShortcut {
-  commandName: string;      // must equal a key in manifest `commands`
-  description: string;      // surfaced in chrome://extensions/shortcuts
-  suggestedKey: string;     // e.g. 'Alt+Shift+E' — documentation, cross-checked against manifest
+  commandName: string; // must equal a key in manifest `commands`
+  description: string; // surfaced in chrome://extensions/shortcuts
+  suggestedKey: string; // e.g. 'Alt+Shift+E' — documentation, cross-checked against manifest
   onInvoke: (ctx: ShortcutCtx) => Promise<void> | void;
 }
 
@@ -97,7 +97,7 @@ export interface OmniModule {
   Popup: Component;
   onBackground?: (ctx: BackgroundCtx) => void;
   storageDefaults: Record<string, unknown>;
-  shortcut?: OmniShortcut;  // NEW
+  shortcut?: OmniShortcut; // NEW
 }
 ```
 
@@ -211,10 +211,7 @@ Extract the toggle math to a pure helper so popup + shortcut share the logic.
 // src/modules/dark/service.ts (addition)
 import type { Mode } from '../../core/types';
 
-export function nextSiteValueOnToggle(
-  current: Mode,
-  defaultMode: 'dark' | 'light',
-): Mode {
+export function nextSiteValueOnToggle(current: Mode, defaultMode: 'dark' | 'light'): Mode {
   const effective = current === 'dark' || current === 'light' ? current : defaultMode;
   const nextEffective = effective === 'dark' ? 'light' : 'dark';
   return nextEffective === defaultMode ? 'default' : nextEffective;
@@ -295,14 +292,14 @@ Explicit `mac:` avoids Chrome's default auto-substitution of `Alt` to `Command+S
 
 ## 6. Edge cases
 
-| Scenario | Behaviour |
-| --- | --- |
-| Shortcut pressed on `chrome://`, `about:`, or `file://` tab (dark) | `tab.url` is absent or `extractETLD1` returns null → `onInvoke` no-ops silently. |
-| `chrome.action.openPopup()` fails (Chrome <127, no focused window) | Logged to console. `pendingTab` remains set; cleared on the next popup open via any path. Minor UX glitch, acceptable for v1. |
-| User spam-presses the shortcut | Each press re-sets `pendingTab` to the same value; idempotent. |
-| Popup is already open when shortcut fires | `openPopup()` is a no-op on already-open popups. The existing mounted `App.svelte` has already run `onMount` — the new `pendingTab` will be consumed on the *next* open. v1-acceptable. |
-| Unknown command fired (dead manifest entry or removed module) | Warn, no throw. |
-| `onInvoke` throws | Caught and logged. The extension stays functional. |
+| Scenario                                                           | Behaviour                                                                                                                                                                               |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Shortcut pressed on `chrome://`, `about:`, or `file://` tab (dark) | `tab.url` is absent or `extractETLD1` returns null → `onInvoke` no-ops silently.                                                                                                        |
+| `chrome.action.openPopup()` fails (Chrome <127, no focused window) | Logged to console. `pendingTab` remains set; cleared on the next popup open via any path. Minor UX glitch, acceptable for v1.                                                           |
+| User spam-presses the shortcut                                     | Each press re-sets `pendingTab` to the same value; idempotent.                                                                                                                          |
+| Popup is already open when shortcut fires                          | `openPopup()` is a no-op on already-open popups. The existing mounted `App.svelte` has already run `onMount` — the new `pendingTab` will be consumed on the _next_ open. v1-acceptable. |
+| Unknown command fired (dead manifest entry or removed module)      | Warn, no throw.                                                                                                                                                                         |
+| `onInvoke` throws                                                  | Caught and logged. The extension stays functional.                                                                                                                                      |
 
 ## 7. Testing
 

@@ -20,7 +20,7 @@ const raw = dataRaw as unknown as EmojibaseEntry[];
 export const EMOJIS: readonly EmojiEntry[] = raw
   .filter((e) => e.group !== undefined && e.group !== COMPONENT_GROUP)
   .slice()
-  .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+  .toSorted((a, b) => (a.order ?? 0) - (b.order ?? 0))
   .map((e) => ({
     char: e.emoji,
     name: e.label.toLowerCase(),
