@@ -3,9 +3,9 @@
   import { EMOJIS } from './data';
   import { fuzzyFilter, pushRecent, type EmojiEntry } from './service';
   import { RECENTS_MAX } from './storage';
+  import { STORAGE_KEY } from '../../core/storage';
 
   const COLS = 8;
-  const STORAGE_KEY = 'omni';
 
   let searchInput: HTMLInputElement | undefined = $state();
   let gridContainer: HTMLDivElement | undefined = $state();
@@ -35,22 +35,11 @@
 
   const recentsEnd = $derived(recentEntries.length);
 
-  // Reset selection when query changes. Uses an effect on query only.
+  // Reset selection to 0 whenever the query changes.
+  // `visible` never shrinks outside of a query change, so a bounds clamp is not needed.
   $effect(() => {
-    // touch `query` to register the dep
     query;
     selected = 0;
-  });
-
-  // Keep selection within bounds.
-  $effect(() => {
-    if (visible.length === 0) {
-      selected = 0;
-    } else if (selected > visible.length - 1) {
-      selected = visible.length - 1;
-    } else if (selected < 0) {
-      selected = 0;
-    }
   });
 
   onMount(async () => {

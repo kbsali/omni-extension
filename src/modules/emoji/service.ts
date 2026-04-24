@@ -4,7 +4,7 @@ export interface EmojiEntry {
   keywords: string[];
 }
 
-export interface ScoredEmoji {
+interface ScoredEmoji {
   entry: EmojiEntry;
   score: number;
   index: number;
