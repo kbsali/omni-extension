@@ -26,11 +26,14 @@ describe('core/registry', () => {
   });
 });
 
+interface ManifestCommand {
+  suggested_key?: { default?: string };
+  description?: string;
+}
+
 describe('core/registry — shortcut / manifest parity', () => {
-  const manifestCommands = ((manifest as any).commands ?? {}) as Record<
-    string,
-    { suggested_key?: { default?: string }; description?: string }
-  >;
+  const manifestCommands =
+    (manifest as unknown as { commands?: Record<string, ManifestCommand> }).commands ?? {};
 
   const modulesWithShortcut = modules.filter((m) => m.shortcut !== undefined);
 
