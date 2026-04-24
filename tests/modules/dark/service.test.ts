@@ -5,6 +5,7 @@ import {
   diffRegistrations,
 } from '../../../src/modules/dark/service';
 import { COOKIES_DEFAULTS } from '../../../src/modules/cookies/storage';
+import { EMOJI_DEFAULTS } from '../../../src/modules/emoji/storage';
 import type { OmniStorage } from '../../../src/core/types';
 
 const baseStorage = (): OmniStorage => ({
@@ -12,6 +13,7 @@ const baseStorage = (): OmniStorage => ({
   modules: {
     dark: { defaultMode: 'light', brightness: 1.0, sites: {} },
     cookies: { ...COOKIES_DEFAULTS },
+    emoji: { ...EMOJI_DEFAULTS },
   },
 });
 
