@@ -2,10 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { modules } from '../../src/core/registry';
 
 describe('core/registry', () => {
-  it('exports the dark and cookies modules', () => {
-    expect(modules.length).toBeGreaterThanOrEqual(2);
+  it('exports the dark, cookies, and emoji modules', () => {
+    expect(modules.length).toBeGreaterThanOrEqual(3);
     expect(modules.find((m) => m.id === 'dark')).toBeDefined();
     expect(modules.find((m) => m.id === 'cookies')).toBeDefined();
+    expect(modules.find((m) => m.id === 'emoji')).toBeDefined();
   });
 
   it('all module ids are unique', () => {
