@@ -24,6 +24,20 @@ export interface BackgroundCtx {
   onStorageChange: (cb: (next: OmniStorage, prev: OmniStorage) => void) => void;
 }
 
+export interface ShortcutCtx {
+  getStorage: () => Promise<OmniStorage>;
+  writeStorage: (next: OmniStorage) => Promise<void>;
+  getActiveTab: () => Promise<chrome.tabs.Tab | undefined>;
+  openPopupFocusedOn: (moduleId: string) => Promise<void>;
+}
+
+export interface OmniShortcut {
+  commandName: string;
+  description: string;
+  suggestedKey: string;
+  onInvoke: (ctx: ShortcutCtx) => Promise<void> | void;
+}
+
 export interface OmniModule {
   id: string;
   label: string;
@@ -31,4 +45,5 @@ export interface OmniModule {
   Popup: Component;
   onBackground?: (ctx: BackgroundCtx) => void;
   storageDefaults: Record<string, unknown>;
+  shortcut?: OmniShortcut;
 }
