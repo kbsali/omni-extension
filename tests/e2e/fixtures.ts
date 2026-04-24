@@ -9,7 +9,7 @@ export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  context: async ({}, use) => {
+  context: async (_, use) => {
     const context = await chromium.launchPersistentContext('', {
       channel: 'chromium',
       headless: false, // MV3 service workers do not boot in standard headless

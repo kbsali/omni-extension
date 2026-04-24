@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "import"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "rules": {},
+  "env": {
+    "browser": true,
+    "node": true,
+    "webextensions": true,
+    "es2024": true
+  },
+  "ignorePatterns": [
+    "dist/",
+    "coverage/",
+    "test-results/",
+    "playwright-report/",
+    "node_modules/",
+    "docs/",
+    "**/*.svelte"
+  ]
+}

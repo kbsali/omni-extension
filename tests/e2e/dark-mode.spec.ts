@@ -44,7 +44,7 @@ test('toggling dark mode injects style element on the active site', async ({ con
       };
       const omni = cur.omni ?? { modules: { dark: { defaultMode: 'light', brightness: 1.0, sites: {} } } };
       const dark = omni.modules?.dark ?? { defaultMode: 'light', brightness: 1.0, sites: {} };
-      const sites = { ...(dark.sites ?? {}), 'example.com': 'dark' as const };
+      const sites = { ...dark.sites, 'example.com': 'dark' as const };
       const next = {
         ...omni,
         modules: { ...omni.modules, dark: { ...dark, sites } },
