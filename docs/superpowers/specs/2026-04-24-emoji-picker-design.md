@@ -6,7 +6,7 @@
 
 ## 1. Purpose
 
-A keyboard-driven emoji picker module for the Omni Extension popup. Open the popup, focus lands in a search input, typing fuzzy-filters a curated emoji grid, arrow keys move a selection highlight, Enter copies the selected emoji to the clipboard and closes the popup. Escape clears the query (or closes when already empty). Recently copied emojis are remembered across sessions and shown above the main grid when the query is empty.
+A keyboard-driven emoji picker module for the Omni Extension popup. Open the popup, focus lands in a search input, typing fuzzy-filters an emoji grid, arrow keys move a selection highlight, Enter copies the selected emoji to the clipboard and closes the popup. Escape clears the query (or closes when already empty). Recently copied emojis are remembered across sessions and shown above the main grid when the query is empty.
 
 This is the module referenced as "Smiley keyboard" in `2026-04-21-omni-extension-design.md` § 11 Future Modules.
 
@@ -15,7 +15,7 @@ This is the module referenced as "Smiley keyboard" in `2026-04-21-omni-extension
 **In scope:**
 
 - New module `src/modules/emoji/` plugging into the existing `OmniModule` contract.
-- Curated `~200` emoji dataset with name + keywords (English only, hand-picked, loose category order).
+- Emoji dataset sourced from the `emojibase-data` package (`en/compact.json`), ~1800 entries with per-emoji `annotation` (name) and `tags` (keywords). Mapped once at module load into `EmojiEntry[]`. English only in v1.
 - Pure fuzzy filter / scoring service, unit-testable without DOM or `chrome.*`.
 - Svelte 5 popup UI: autofocused search input, 8-col grid, recents row, status line.
 - Full keyboard flow: typing filters, arrows move selection, Enter copies + closes, Escape clears or closes, Backspace edits.
@@ -28,7 +28,7 @@ This is the module referenced as "Smiley keyboard" in `2026-04-21-omni-extension
 - Categorised/tabbed browsing.
 - User-pinned favourites beyond the auto-maintained recents list.
 - Localised (non-English) names/keywords.
-- Emoji dataset beyond the curated `~200` (future: swap `data.ts` for a package like `unicode-emoji-json`).
+- Emoji dataset beyond what `emojibase-data/en/compact.json` ships (covers full standard set at time of writing).
 - E2E tests (per project preference for personal projects).
 
 ## 3. Architecture
@@ -79,23 +79,33 @@ No new manifest permissions. The popup is a user-gesture context, so `navigator.
 
 ## 4. Data
 
-### 4.1 Entry shape
+### 4.1 Entry shape & source
 
 ```ts
 // src/modules/emoji/data.ts
+import compact from 'emojibase-data/en/compact.json';
+
 export interface EmojiEntry {
   char: string;       // e.g. "😀"
   name: string;       // primary display name, lowercase, e.g. "grinning face"
-  keywords: string[]; // 2–4 lowercase keywords, e.g. ["smile", "happy", "face"]
+  keywords: string[]; // from emojibase `tags`, lowercased
 }
 
-export const EMOJIS: readonly EmojiEntry[] = [
-  /* ~200 hand-picked entries, loosely grouped:
-     faces, people & gestures, animals, food, activity, travel, objects, symbols, flags */
-];
+// Skip skin-tone / regional indicator variants (out of scope for v1).
+// emojibase-data's compact shape: { annotation, hexcode, tags?, emoji, order, group, ... }
+export const EMOJIS: readonly EmojiEntry[] = compact
+  .filter((e) => e.group !== undefined) // drops no-group entries like component skin tones
+  .sort((a, b) => a.order - b.order)
+  .map((e) => ({
+    char: e.emoji,
+    name: e.annotation.toLowerCase(),
+    keywords: (e.tags ?? []).map((t) => t.toLowerCase()),
+  }));
 ```
 
-Array order defines the default display order when the query is empty. No sorting at runtime except by score during filtering.
+`emojibase-data/en/compact.json` ships ~1800 entries. The dataset is imported as a static JSON bundle (Vite resolves it at build time), adds ~80-100KB gzipped to the popup chunk — acceptable for an on-click popup.
+
+Default display order is emojibase's `order` field (keeps related emojis adjacent, e.g. all "grinning" faces together). No sorting at runtime except by score during filtering.
 
 ### 4.2 Storage slice
 
@@ -296,16 +306,19 @@ Update to assert the `emoji` module is present alongside `dark` and `cookies`. L
 
 The implementation plan will translate this into tasks. The touch points are:
 
-1. New files under `src/modules/emoji/` and `tests/modules/emoji/`.
-2. `src/core/types.ts` — add `emoji: EmojiStorage` (import `EmojiStorage` from the new module).
-3. `src/core/registry.ts` — import + append `emoji`.
-4. `tests/core/registry.test.ts` — assert emoji module is registered.
-5. `README.md` (root) — list Emoji under Features.
+1. `package.json` — add `emojibase-data` as a runtime dependency (pinned major version).
+2. `tsconfig.json` — confirm `resolveJsonModule: true` (already enabled by the svelte preset); verify the import from `emojibase-data/en/compact.json` type-checks.
+3. New files under `src/modules/emoji/` and `tests/modules/emoji/`.
+4. `src/core/types.ts` — add `emoji: EmojiStorage` (import `EmojiStorage` from the new module).
+5. `src/core/registry.ts` — import + append `emoji`.
+6. `tests/core/registry.test.ts` — assert emoji module is registered.
+7. `README.md` (root) — list Emoji under Features.
 
 No changes required in `src/background/`, `src/popup/App.svelte`, or `manifest.config.ts` — the module registry pattern handles UI mounting and the popup-context `navigator.clipboard` avoids new permissions.
 
 ## 10. Open Questions Deferred to Plan Phase
 
-- The exact curation of the 200-entry `EMOJIS` array (source: compile from a common-emoji reference during plan phase, review for duplicates and keyword quality).
+- Whether rendering ~1800 grid cells at once is fast enough on modest hardware. If not, the escape hatch is `content-visibility: auto` on grid rows (zero structural change) or switching to a windowed renderer (Svelte virtual list) in a follow-up. Decide empirically during implementation.
+- Final `EmojiEntry` filter: confirm during implementation whether the `group !== undefined` filter correctly drops component/skin-tone entries without losing wanted emojis. Adjust the filter predicate if emojibase's schema has shifted.
 - Grid cell size / gap / highlight styling — pick during implementation to match existing popup styling language (`dark` / `cookies`).
 - Whether the status line also shows the Unicode codepoint (like joypixels' `(1f603)`) — deferred; small nice-to-have.
