@@ -195,7 +195,6 @@ The **visible list** is the flattened row-major sequence the user navigates:
 `recentEntries` is derived by looking up each stored char in `EMOJIS`; chars no longer in the dataset are skipped.
 
 A single `selected: number` indexes into the visible list. It resets to `0` on:
-
 - Popup mount.
 - Every change to `query`.
 
