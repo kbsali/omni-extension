@@ -8,6 +8,12 @@ const emoji: OmniModule = {
   icon: '😀',
   Popup,
   storageDefaults: { ...EMOJI_DEFAULTS },
+  shortcut: {
+    commandName: 'open-emoji',
+    description: 'Open emoji picker',
+    suggestedKey: 'Alt+Shift+E',
+    onInvoke: (ctx) => ctx.openPopupFocusedOn('emoji'),
+  },
 };
 
 export default emoji;
