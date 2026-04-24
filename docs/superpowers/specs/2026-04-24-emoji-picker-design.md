@@ -86,8 +86,8 @@ No new manifest permissions. The popup is a user-gesture context, so `navigator.
 import compact from 'emojibase-data/en/compact.json';
 
 export interface EmojiEntry {
-  char: string;       // e.g. "😀"
-  name: string;       // primary display name, lowercase, e.g. "grinning face"
+  char: string; // e.g. "😀"
+  name: string; // primary display name, lowercase, e.g. "grinning face"
   keywords: string[]; // from emojibase `tags`, lowercased
 }
 
@@ -125,38 +125,34 @@ Living under the existing root key `omni` → `omni.modules.emoji.recents`. Exis
 
 ```ts
 // src/modules/emoji/service.ts
-export interface ScoredEmoji { entry: EmojiEntry; score: number }
+export interface ScoredEmoji {
+  entry: EmojiEntry;
+  score: number;
+}
 
 // Empty / whitespace-only query → all entries in original order.
 // Otherwise: scored matches, sorted by score desc, ties broken by original index.
-export function fuzzyFilter(
-  query: string,
-  entries: readonly EmojiEntry[],
-): EmojiEntry[];
+export function fuzzyFilter(query: string, entries: readonly EmojiEntry[]): EmojiEntry[];
 
 // Immutable update: move `char` to front, dedupe, cap at `max`.
-export function pushRecent(
-  recents: readonly string[],
-  char: string,
-  max: number,
-): string[];
+export function pushRecent(recents: readonly string[], char: string, max: number): string[];
 ```
 
 ### 5.1 Scoring rules
 
 Query is trimmed and lowercased. For each entry, compute the best score across `name` and each `keyword`, then take the entry's max. Score ≤ 0 means "no match" and the entry is filtered out.
 
-| Match kind                                                 | Score |
-| ---------------------------------------------------------- | ----- |
-| `name === query`                                           | 1000  |
-| `name.startsWith(query)`                                   | 500   |
-| a word in `name` starts with query (split on whitespace)   | 300   |
-| `keyword === query`                                        | 250   |
-| `keyword.startsWith(query)`                                | 150   |
-| `name.includes(query)`                                     | 100   |
-| `keyword.includes(query)`                                  | 50    |
-| subsequence match on `name` (all query chars in order)     | 10    |
-| no match                                                   | -1    |
+| Match kind                                               | Score |
+| -------------------------------------------------------- | ----- |
+| `name === query`                                         | 1000  |
+| `name.startsWith(query)`                                 | 500   |
+| a word in `name` starts with query (split on whitespace) | 300   |
+| `keyword === query`                                      | 250   |
+| `keyword.startsWith(query)`                              | 150   |
+| `name.includes(query)`                                   | 100   |
+| `keyword.includes(query)`                                | 50    |
+| subsequence match on `name` (all query chars in order)   | 10    |
+| no match                                                 | -1    |
 
 **Tie-break:** stable sort preserving original array order (implemented by decorating with index, sorting by `[-score, index]`).
 
@@ -199,6 +195,7 @@ The **visible list** is the flattened row-major sequence the user navigates:
 `recentEntries` is derived by looking up each stored char in `EMOJIS`; chars no longer in the dataset are skipped.
 
 A single `selected: number` indexes into the visible list. It resets to `0` on:
+
 - Popup mount.
 - Every change to `query`.
 
@@ -208,15 +205,15 @@ Clamped to `[0, visible.length - 1]`. When the visible list is empty, no selecti
 
 All bindings listen at the search input (the input keeps focus for the entire popup lifetime).
 
-| Key              | Action                                                                              |
-| ---------------- | ----------------------------------------------------------------------------------- |
-| printable / Backspace | updates `query`, re-filters, resets `selected` to 0                             |
-| ArrowRight       | `selected = min(selected + 1, last)`                                                |
-| ArrowLeft        | `selected = max(selected - 1, 0)`                                                   |
-| ArrowDown        | `selected = min(selected + 8, last)`                                                |
-| ArrowUp          | `selected = max(selected - 8, 0)`                                                   |
-| Enter            | copy visible[selected].char → update recents → close popup                          |
-| Escape           | if `query` non-empty → clear `query` (selection resets to 0); else `window.close()` |
+| Key                   | Action                                                                              |
+| --------------------- | ----------------------------------------------------------------------------------- |
+| printable / Backspace | updates `query`, re-filters, resets `selected` to 0                                 |
+| ArrowRight            | `selected = min(selected + 1, last)`                                                |
+| ArrowLeft             | `selected = max(selected - 1, 0)`                                                   |
+| ArrowDown             | `selected = min(selected + 8, last)`                                                |
+| ArrowUp               | `selected = max(selected - 8, 0)`                                                   |
+| Enter                 | copy visible[selected].char → update recents → close popup                          |
+| Escape                | if `query` non-empty → clear `query` (selection resets to 0); else `window.close()` |
 
 Mouse click on an emoji cell = same as Enter on it.
 
@@ -234,7 +231,9 @@ async function copyAndClose(char: string): Promise<void> {
   }
   try {
     await persistRecent(char); // fire-and-forget semantics: failure is swallowed silently
-  } catch { /* best-effort */ }
+  } catch {
+    /* best-effort */
+  }
   window.close();
 }
 ```

@@ -31,9 +31,9 @@ describe('modules/emoji/service — pushRecent', () => {
 });
 
 const grinning: EmojiEntry = { char: '😀', name: 'grinning face', keywords: ['smile', 'happy'] };
-const grin:     EmojiEntry = { char: '😬', name: 'grimacing face', keywords: ['grin', 'awkward'] };
-const cat:      EmojiEntry = { char: '🐱', name: 'cat face', keywords: ['kitten', 'pet'] };
-const pizza:    EmojiEntry = { char: '🍕', name: 'pizza', keywords: ['food', 'italian'] };
+const grin: EmojiEntry = { char: '😬', name: 'grimacing face', keywords: ['grin', 'awkward'] };
+const cat: EmojiEntry = { char: '🐱', name: 'cat face', keywords: ['kitten', 'pet'] };
+const pizza: EmojiEntry = { char: '🍕', name: 'pizza', keywords: ['food', 'italian'] };
 
 const ALL: readonly EmojiEntry[] = [grinning, grin, cat, pizza];
 
