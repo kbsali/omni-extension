@@ -7,7 +7,9 @@ const sessionStore = new Map<string, unknown>();
 
 beforeEach(() => {
   sessionStore.clear();
-  // @ts-expect-error — augmenting the sinon-chrome mock at runtime
+  // Minimal stub of the three methods `session.ts` uses; cast away the
+  // overloaded StorageArea signature since sinon-chrome doesn't ship
+  // chrome.storage.session and we only need our helpers' happy path.
   chrome.storage.session = {
     get: async (key: string) =>
       sessionStore.has(key) ? { [key]: sessionStore.get(key) } : {},
@@ -17,7 +19,7 @@ beforeEach(() => {
     remove: async (key: string) => {
       sessionStore.delete(key);
     },
-  };
+  } as unknown as typeof chrome.storage.session;
 });
 
 describe('core/session — pendingTab', () => {
