@@ -45,7 +45,12 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
-      include: ['src/core/**', 'src/modules/*/service.ts', 'src/modules/*/storage.ts', 'src/modules/*/css.ts'],
+      include: [
+        'src/core/**',
+        'src/modules/*/service.ts',
+        'src/modules/*/storage.ts',
+        'src/modules/*/css.ts',
+      ],
     },
   },
 });

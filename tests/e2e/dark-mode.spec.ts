@@ -1,6 +1,9 @@
 import { test, expect } from './fixtures';
 
-test('toggling dark mode injects style element on the active site', async ({ context, extensionId }) => {
+test('toggling dark mode injects style element on the active site', async ({
+  context,
+  extensionId,
+}) => {
   // Capture all console messages from all pages and the service worker.
   const logs: string[] = [];
   context.on('console', (msg) => logs.push(`[page:${msg.type()}] ${msg.text()}`));
@@ -42,9 +45,11 @@ test('toggling dark mode injects style element on the active site', async ({ con
       const cur = (await chrome.storage.sync.get('omni')) as {
         omni?: { modules?: { dark?: { sites?: Record<string, 'dark' | 'light' | null> } } };
       };
-      const omni = cur.omni ?? { modules: { dark: { defaultMode: 'light', brightness: 1.0, sites: {} } } };
+      const omni = cur.omni ?? {
+        modules: { dark: { defaultMode: 'light', brightness: 1.0, sites: {} } },
+      };
       const dark = omni.modules?.dark ?? { defaultMode: 'light', brightness: 1.0, sites: {} };
-      const sites = { ...(dark.sites ?? {}), 'example.com': 'dark' as const };
+      const sites = { ...dark.sites, 'example.com': 'dark' as const };
       const next = {
         ...omni,
         modules: { ...omni.modules, dark: { ...dark, sites } },
@@ -66,7 +71,10 @@ test('toggling dark mode injects style element on the active site', async ({ con
 
     dumpLogs('end of test');
 
-    expect(styleExists, `Expected style#omni-dark-style on the page after toggling. Logs above.`).toBe(1);
+    expect(
+      styleExists,
+      `Expected style#omni-dark-style on the page after toggling. Logs above.`,
+    ).toBe(1);
   } catch (err) {
     dumpLogs('failure path');
     throw err;

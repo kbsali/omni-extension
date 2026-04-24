@@ -24,9 +24,7 @@ export async function writeStorage(storage: OmniStorage): Promise<void> {
   await chrome.storage.sync.set({ [STORAGE_KEY]: storage });
 }
 
-export function onStorageChange(
-  cb: (next: OmniStorage, prev: OmniStorage) => void,
-): void {
+export function onStorageChange(cb: (next: OmniStorage, prev: OmniStorage) => void): void {
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName !== 'sync') return;
     const change = changes[STORAGE_KEY];

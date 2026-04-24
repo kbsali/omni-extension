@@ -16,13 +16,13 @@ export function computeEnrolledDomains(storage: OmniStorage): EnrolledSet {
     const excludeDomains = Object.entries(sites)
       .filter(([, mode]) => mode === 'light')
       .map(([domain]) => domain)
-      .sort();
+      .toSorted();
     return { mode: 'global', excludeDomains };
   }
   const domains = Object.entries(sites)
     .filter(([, mode]) => mode === 'dark')
     .map(([domain]) => domain)
-    .sort();
+    .toSorted();
   return { mode: 'per-site', domains };
 }
 
@@ -45,7 +45,11 @@ export function diffRegistrations(prev: EnrolledSet, next: EnrolledSet): Registr
     if (excludesChanged) {
       return { toRegister: next, toUnregister: ['__global__'], fullReregister: true };
     }
-    return { toRegister: { mode: 'per-site', domains: [] }, toUnregister: [], fullReregister: false };
+    return {
+      toRegister: { mode: 'per-site', domains: [] },
+      toUnregister: [],
+      fullReregister: false,
+    };
   }
 
   const prevS = prev as Extract<EnrolledSet, { mode: 'per-site' }>;

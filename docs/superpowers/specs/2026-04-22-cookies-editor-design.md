@@ -13,6 +13,7 @@ Plugs into the existing `OmniModule` registry pattern (see `2026-04-21-omni-exte
 ## 2. Scope (v1)
 
 **In scope:**
+
 - New module at `src/modules/cookies/` implementing `OmniModule`.
 - List every cookie matching the current tab's eTLD+1 (Chrome's implicit subdomain match).
 - Per-cookie accordion editor:
@@ -27,6 +28,7 @@ Plugs into the existing `OmniModule` registry pattern (see `2026-04-21-omni-exte
 - Vitest unit tests on pure logic in `service.ts`.
 
 **Out of scope for v1:**
+
 - Cross-site cookie browsing, domain picker, or global cookie list.
 - Editing advanced fields (`path`, `domain`, `httpOnly`, `secure`, `sameSite`).
 - Import of previously exported JSON (export-only for now).
@@ -96,7 +98,7 @@ Add `"cookies"` to `manifest.config.ts` permissions. `host_permissions: ["<all_u
 
 ### 5.2 Domain matching
 
-`chrome.cookies.getAll({ domain: eTLD1 })` returns cookies for the domain *and all its subdomains* — Chrome's documented match rule when the argument has no leading dot. This matches the screenshot behavior (e.g., `x.com` view includes `.x.com` cookies) and requires no extra filtering client-side.
+`chrome.cookies.getAll({ domain: eTLD1 })` returns cookies for the domain _and all its subdomains_ — Chrome's documented match rule when the argument has no leading dot. This matches the screenshot behavior (e.g., `x.com` view includes `.x.com` cookies) and requires no extra filtering client-side.
 
 eTLD+1 comes from the existing `core/domain.ts:extractETLD1` (uses `tldts`).
 
@@ -117,14 +119,14 @@ export function buildCookieUrl(
 
 ### 5.4 Operations
 
-| Action       | Call                                                                                                           |
-|--------------|----------------------------------------------------------------------------------------------------------------|
-| List         | `chrome.cookies.getAll({ domain })` → sort by `name`                                                           |
-| Save edit    | `chrome.cookies.set({ url, name, value, path, domain, expirationDate?, secure, httpOnly, sameSite, storeId })` |
-| Delete       | `chrome.cookies.remove({ url, name, storeId })`                                                                |
-| Delete All   | `getAll` → `Promise.all(remove(…))` after `confirm(...)`                                                       |
-| Add          | `set({ url: tabUrl, name, value, path: '/', domain: currentETLD1, expirationDate? })`                          |
-| Export       | `getAll` → `JSON.stringify(cookies, null, 2)` → `Blob` → `URL.createObjectURL` → anchor click                  |
+| Action     | Call                                                                                                           |
+| ---------- | -------------------------------------------------------------------------------------------------------------- |
+| List       | `chrome.cookies.getAll({ domain })` → sort by `name`                                                           |
+| Save edit  | `chrome.cookies.set({ url, name, value, path, domain, expirationDate?, secure, httpOnly, sameSite, storeId })` |
+| Delete     | `chrome.cookies.remove({ url, name, storeId })`                                                                |
+| Delete All | `getAll` → `Promise.all(remove(…))` after `confirm(...)`                                                       |
+| Add        | `set({ url: tabUrl, name, value, path: '/', domain: currentETLD1, expirationDate? })`                          |
+| Export     | `getAll` → `JSON.stringify(cookies, null, 2)` → `Blob` → `URL.createObjectURL` → anchor click                  |
 
 Session cookies: when the user leaves the `expires` field blank, omit `expirationDate` from the `set` payload entirely (Chrome treats missing `expirationDate` as session).
 
@@ -242,7 +244,11 @@ Document in `src/modules/cookies/README.md`:
 3. **No live updates.** If a site sets a cookie while the popup is open, click Refresh to see it.
 4. **No import.** Exported JSON is inspection-only in v1.
 5. **Set failures surfaced inline.** `chrome.cookies.set` rejects on invariant violations (e.g., `secure: true` with an `http://` URL, `sameSite: 'none'` without `secure: true`, malformed path). The module shows the error under the row; the user has to resolve the conflict by changing `expires` / `value` in ways that keep the existing flags valid — advanced flags are not editable in v1.
-6. **Default cookie store only.** Incognito-specific stores are not selectable; cookies from non-default stores are preserved on round-trip but not explicitly filterable.
+   <<<<<<< HEAD
+6. **`httpOnly` caveat.** Chrome may reject setting some `httpOnly` cookies from an extension context; the module surfaces the error inline but cannot override it.
+7. # **Default cookie store only.** Incognito-specific stores are not selectable; cookies from non-default stores are preserved on round-trip but not explicitly filterable.
+8. **Default cookie store only.** Incognito-specific stores are not selectable; cookies from non-default stores are preserved on round-trip but not explicitly filterable.
+   > > > > > > > 249e40a (docs(cookies): clarify set-failure limitation wording)
 
 ## 9. Open Questions Deferred to Plan Phase
 

@@ -5,7 +5,9 @@ describe('buildDarkCss', () => {
   it('includes filter on html with brightness variable', () => {
     const css = buildDarkCss();
     expect(css).toContain('html');
-    expect(css).toContain('filter: invert(1) hue-rotate(180deg) brightness(var(--omni-brightness, 1))');
+    expect(css).toContain(
+      'filter: invert(1) hue-rotate(180deg) brightness(var(--omni-brightness, 1))',
+    );
   });
 
   it('re-inverts media elements', () => {

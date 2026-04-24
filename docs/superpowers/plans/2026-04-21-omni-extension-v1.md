@@ -64,11 +64,13 @@ omni-extension/
 ## Task 0: Project Bootstrap
 
 **Files:**
+
 - Create: `package.json`, `pnpm-lock.yaml` (generated), `.gitignore`, `tsconfig.json`, `vite.config.ts`, `manifest.config.ts`, `tests/setup.ts`
 
 - [ ] **Step 1: Create `.gitignore`**
 
 Create `.gitignore`:
+
 ```
 node_modules/
 dist/
@@ -81,6 +83,7 @@ coverage/
 - [ ] **Step 2: Create `package.json`**
 
 Create `package.json`:
+
 ```json
 {
   "name": "omni-extension",
@@ -118,6 +121,7 @@ Create `package.json`:
 - [ ] **Step 3: Create `tsconfig.json`**
 
 Create `tsconfig.json`:
+
 ```json
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
@@ -147,6 +151,7 @@ Create `tsconfig.json`:
 - [ ] **Step 4: Create `manifest.config.ts`**
 
 Create `manifest.config.ts`:
+
 ```ts
 import { defineManifest } from '@crxjs/vite-plugin';
 import pkg from './package.json' with { type: 'json' };
@@ -171,6 +176,7 @@ export default defineManifest({
 - [ ] **Step 5: Create `vite.config.ts`**
 
 Create `vite.config.ts`:
+
 ```ts
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
@@ -192,7 +198,12 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
-      include: ['src/core/**', 'src/modules/*/service.ts', 'src/modules/*/storage.ts', 'src/modules/*/css.ts'],
+      include: [
+        'src/core/**',
+        'src/modules/*/service.ts',
+        'src/modules/*/storage.ts',
+        'src/modules/*/css.ts',
+      ],
     },
   },
 });
@@ -201,6 +212,7 @@ export default defineConfig({
 - [ ] **Step 6: Create `tests/setup.ts`**
 
 Create `tests/setup.ts`:
+
 ```ts
 import chrome from 'sinon-chrome';
 import { beforeEach, afterAll } from 'vitest';
@@ -220,17 +232,21 @@ afterAll(() => {
 - [ ] **Step 7: Install dependencies**
 
 Run:
+
 ```bash
 pnpm install
 ```
+
 Expected: lockfile generated, `node_modules/` populated. No errors.
 
 - [ ] **Step 8: Verify typecheck + empty test suite passes**
 
 Run:
+
 ```bash
 pnpm typecheck && pnpm test
 ```
+
 Expected: `tsc --noEmit` exits 0 (no files yet — passes trivially). Vitest reports "No test files found" and exits 0 (pass `--passWithNoTests` if needed; adjust later).
 
 If vitest fails on no-tests, add `"test": "vitest run --passWithNoTests"` to package.json scripts.
@@ -247,12 +263,14 @@ git commit -m "chore: bootstrap vite + svelte 5 + vitest + crxjs scaffolding"
 ## Task 1: Core Types
 
 **Files:**
+
 - Create: `src/core/types.ts`
 - Create: `tests/core/registry.test.ts` (types-only sanity test, written later in Task 7)
 
 - [ ] **Step 1: Write `src/core/types.ts`**
 
 Create `src/core/types.ts`:
+
 ```ts
 import type { Component } from 'svelte';
 
@@ -289,9 +307,11 @@ export interface OmniModule {
 - [ ] **Step 2: Verify typecheck passes**
 
 Run:
+
 ```bash
 pnpm typecheck
 ```
+
 Expected: exit 0, no errors.
 
 - [ ] **Step 3: Commit**
@@ -306,12 +326,14 @@ git commit -m "feat(core): add OmniStorage, OmniModule, and DarkStorage types"
 ## Task 2: Domain Extraction (eTLD+1)
 
 **Files:**
+
 - Create: `src/core/domain.ts`
 - Create: `tests/core/domain.test.ts`
 
 - [ ] **Step 1: Write failing test `tests/core/domain.test.ts`**
 
 Create `tests/core/domain.test.ts`:
+
 ```ts
 import { describe, it, expect } from 'vitest';
 import { extractETLD1 } from '../../src/core/domain';
@@ -365,6 +387,7 @@ Expected: FAIL — "Cannot find module '../../src/core/domain'".
 - [ ] **Step 3: Implement `src/core/domain.ts`**
 
 Create `src/core/domain.ts`:
+
 ```ts
 import { getDomain, parse } from 'tldts';
 
@@ -411,15 +434,22 @@ git commit -m "feat(core): add extractETLD1 with PSL-aware domain parsing"
 ## Task 3: Typed Storage Wrapper
 
 **Files:**
+
 - Create: `src/core/storage.ts`
 - Create: `tests/core/storage.test.ts`
 
 - [ ] **Step 1: Write failing test `tests/core/storage.test.ts`**
 
 Create `tests/core/storage.test.ts`:
+
 ```ts
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { readStorage, writeStorage, onStorageChange, DEFAULT_STORAGE } from '../../src/core/storage';
+import {
+  readStorage,
+  writeStorage,
+  onStorageChange,
+  DEFAULT_STORAGE,
+} from '../../src/core/storage';
 
 declare const chrome: any;
 
@@ -438,7 +468,9 @@ describe('core/storage', () => {
     it('returns stored value under the "omni" key', async () => {
       const stored = {
         version: 1,
-        modules: { dark: { defaultMode: 'dark', brightness: 0.9, sites: { 'github.com': 'dark' } } },
+        modules: {
+          dark: { defaultMode: 'dark', brightness: 0.9, sites: { 'github.com': 'dark' } },
+        },
       };
       chrome.storage.sync.get.yields({ omni: stored });
       const storage = await readStorage();
@@ -464,7 +496,10 @@ describe('core/storage', () => {
       const listener = chrome.storage.onChanged.addListener.firstCall.args[0];
 
       const newValue = { ...DEFAULT_STORAGE };
-      const oldValue = { ...DEFAULT_STORAGE, modules: { dark: { ...DEFAULT_STORAGE.modules.dark, brightness: 0.8 } } };
+      const oldValue = {
+        ...DEFAULT_STORAGE,
+        modules: { dark: { ...DEFAULT_STORAGE.modules.dark, brightness: 0.8 } },
+      };
       listener({ omni: { newValue, oldValue } }, 'sync');
 
       expect(cb).toHaveBeenCalledWith(newValue, oldValue);
@@ -499,6 +534,7 @@ Expected: FAIL — "Cannot find module '../../src/core/storage'".
 - [ ] **Step 3: Implement `src/core/storage.ts`**
 
 Create `src/core/storage.ts`:
+
 ```ts
 import type { OmniStorage } from './types';
 
@@ -524,9 +560,7 @@ export async function writeStorage(storage: OmniStorage): Promise<void> {
   await chrome.storage.sync.set({ [STORAGE_KEY]: storage });
 }
 
-export function onStorageChange(
-  cb: (next: OmniStorage, prev: OmniStorage) => void,
-): void {
+export function onStorageChange(cb: (next: OmniStorage, prev: OmniStorage) => void): void {
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName !== 'sync') return;
     const change = changes[STORAGE_KEY];
@@ -553,15 +587,23 @@ git commit -m "feat(core): add typed chrome.storage.sync wrapper with DEFAULT_ST
 ## Task 4: Dark Module Storage Helpers
 
 **Files:**
+
 - Create: `src/modules/dark/storage.ts`
 - Create: `tests/modules/dark/storage.test.ts`
 
 - [ ] **Step 1: Write failing test `tests/modules/dark/storage.test.ts`**
 
 Create `tests/modules/dark/storage.test.ts`:
+
 ```ts
 import { describe, it, expect } from 'vitest';
-import { setSiteMode, setDefaultMode, setBrightness, cycleSiteMode, DARK_DEFAULTS } from '../../../src/modules/dark/storage';
+import {
+  setSiteMode,
+  setDefaultMode,
+  setBrightness,
+  cycleSiteMode,
+  DARK_DEFAULTS,
+} from '../../../src/modules/dark/storage';
 import { DEFAULT_STORAGE } from '../../../src/core/storage';
 
 describe('modules/dark/storage', () => {
@@ -628,6 +670,7 @@ Expected: FAIL — module not found.
 - [ ] **Step 3: Implement `src/modules/dark/storage.ts`**
 
 Create `src/modules/dark/storage.ts`:
+
 ```ts
 import type { DarkStorage, Mode, OmniStorage } from '../../core/types';
 
@@ -698,12 +741,14 @@ git commit -m "feat(dark): add immutable storage helpers for sites, default, bri
 ## Task 5: Dark Service — Pure Resolution Logic
 
 **Files:**
+
 - Create: `src/modules/dark/service.ts`
 - Create: `tests/modules/dark/service.test.ts`
 
 - [ ] **Step 1: Write failing test `tests/modules/dark/service.test.ts`**
 
 Create `tests/modules/dark/service.test.ts`:
+
 ```ts
 import { describe, it, expect } from 'vitest';
 import {
@@ -800,6 +845,7 @@ Expected: FAIL — module not found.
 - [ ] **Step 3: Implement `src/modules/dark/service.ts`**
 
 Create `src/modules/dark/service.ts`:
+
 ```ts
 import type { OmniStorage } from '../../core/types';
 
@@ -848,7 +894,11 @@ export function diffRegistrations(prev: EnrolledSet, next: EnrolledSet): Registr
     if (excludesChanged) {
       return { toRegister: next, toUnregister: ['__global__'], fullReregister: true };
     }
-    return { toRegister: { mode: 'per-site', domains: [] }, toUnregister: [], fullReregister: false };
+    return {
+      toRegister: { mode: 'per-site', domains: [] },
+      toUnregister: [],
+      fullReregister: false,
+    };
   }
 
   const prevS = prev as Extract<EnrolledSet, { mode: 'per-site' }>;
@@ -886,12 +936,14 @@ git commit -m "feat(dark): add resolveMode, computeEnrolledDomains, diffRegistra
 ## Task 6: Dark CSS Generator
 
 **Files:**
+
 - Create: `src/modules/dark/css.ts`
 - Create: `tests/modules/dark/css.test.ts`
 
 - [ ] **Step 1: Write failing test `tests/modules/dark/css.test.ts`**
 
 Create `tests/modules/dark/css.test.ts`:
+
 ```ts
 import { describe, it, expect } from 'vitest';
 import { buildDarkCss, STYLE_ELEMENT_ID } from '../../../src/modules/dark/css';
@@ -900,7 +952,9 @@ describe('buildDarkCss', () => {
   it('includes filter on html with brightness variable', () => {
     const css = buildDarkCss();
     expect(css).toContain('html');
-    expect(css).toContain('filter: invert(1) hue-rotate(180deg) brightness(var(--omni-brightness, 1))');
+    expect(css).toContain(
+      'filter: invert(1) hue-rotate(180deg) brightness(var(--omni-brightness, 1))',
+    );
   });
 
   it('re-inverts media elements', () => {
@@ -931,6 +985,7 @@ Expected: FAIL — module not found.
 - [ ] **Step 3: Implement `src/modules/dark/css.ts`**
 
 Create `src/modules/dark/css.ts`:
+
 ```ts
 export const STYLE_ELEMENT_ID = 'omni-dark-style';
 
@@ -965,15 +1020,21 @@ git commit -m "feat(dark): add buildDarkCss pure generator"
 ## Task 7: Dark Content Script
 
 **Files:**
+
 - Create: `src/modules/dark/content.ts`
 - Create: `tests/modules/dark/content.test.ts`
 
 - [ ] **Step 1: Write failing test `tests/modules/dark/content.test.ts`**
 
 Create `tests/modules/dark/content.test.ts`:
+
 ```ts
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { applyDarkFilter, removeDarkFilter, updateBrightness } from '../../../src/modules/dark/content';
+import {
+  applyDarkFilter,
+  removeDarkFilter,
+  updateBrightness,
+} from '../../../src/modules/dark/content';
 import { STYLE_ELEMENT_ID } from '../../../src/modules/dark/css';
 
 describe('dark/content DOM helpers', () => {
@@ -1025,6 +1086,7 @@ Expected: FAIL — module not found.
 - [ ] **Step 3: Implement `src/modules/dark/content.ts`**
 
 Create `src/modules/dark/content.ts`:
+
 ```ts
 import { buildDarkCss, STYLE_ELEMENT_ID } from './css';
 
@@ -1087,12 +1149,14 @@ git commit -m "feat(dark): add content script with apply/remove/updateBrightness
 ## Task 8: Dark Popup Component
 
 **Files:**
+
 - Create: `src/modules/dark/Popup.svelte`
 - Create: `tests/modules/dark/Popup.test.ts`
 
 - [ ] **Step 1: Write failing test `tests/modules/dark/Popup.test.ts`**
 
 Create `tests/modules/dark/Popup.test.ts`:
+
 ```ts
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, fireEvent } from '@testing-library/svelte';
@@ -1141,6 +1205,7 @@ Expected: FAIL — component not found.
 - [ ] **Step 3: Implement `src/modules/dark/Popup.svelte`**
 
 Create `src/modules/dark/Popup.svelte`:
+
 ```svelte
 <script lang="ts">
   import { onMount } from 'svelte';
@@ -1264,12 +1329,14 @@ git commit -m "feat(dark): add Svelte Popup with moon, toggle, buttons, brightne
 ## Task 9: Dark Module Export
 
 **Files:**
+
 - Create: `src/modules/dark/index.ts`
 - Create: `src/modules/dark/README.md`
 
 - [ ] **Step 1: Write `src/modules/dark/index.ts`**
 
 Create `src/modules/dark/index.ts`:
+
 ```ts
 import type { OmniModule, BackgroundCtx } from '../../core/types';
 import Popup from './Popup.svelte';
@@ -1301,7 +1368,11 @@ async function reconcile(prev: EnrolledSet, next: EnrolledSet): Promise<Enrolled
       },
     ]);
   } else {
-    const toRegister = diff.fullReregister ? next.domains : diff.toRegister.mode === 'per-site' ? diff.toRegister.domains : [];
+    const toRegister = diff.fullReregister
+      ? next.domains
+      : diff.toRegister.mode === 'per-site'
+        ? diff.toRegister.domains
+        : [];
     if (toRegister.length > 0) {
       await chrome.scripting.registerContentScripts(
         toRegister.map((domain) => ({
@@ -1358,18 +1429,22 @@ export default dark;
 - [ ] **Step 2: Write `src/modules/dark/README.md`**
 
 Create `src/modules/dark/README.md`:
+
 ```markdown
 # Dark Mode Module
 
 Per-site dark mode via CSS `filter: invert() hue-rotate()`.
 
 ## Storage shape
+
 See `../../core/types.ts` → `DarkStorage`.
 
 ## Domain matching
+
 eTLD+1 (registrable domain). `docs.github.com` and `github.com` share one setting.
 
 ## Known limitations
+
 - Fixed-position elements may break on some sites (known `filter` stacking context issue).
 - Already-dark sites look inverted-light (deferred to future "smart mode").
 ```
@@ -1377,9 +1452,11 @@ eTLD+1 (registrable domain). `docs.github.com` and `github.com` share one settin
 - [ ] **Step 3: Verify typecheck**
 
 Run:
+
 ```bash
 pnpm typecheck
 ```
+
 Expected: exit 0.
 
 - [ ] **Step 4: Commit**
@@ -1394,12 +1471,14 @@ git commit -m "feat(dark): export OmniModule with background reconciliation"
 ## Task 10: Core Registry
 
 **Files:**
+
 - Create: `src/core/registry.ts`
 - Create: `tests/core/registry.test.ts`
 
 - [ ] **Step 1: Write failing test `tests/core/registry.test.ts`**
 
 Create `tests/core/registry.test.ts`:
+
 ```ts
 import { describe, it, expect } from 'vitest';
 import { modules } from '../../src/core/registry';
@@ -1435,6 +1514,7 @@ Expected: FAIL — module not found.
 - [ ] **Step 3: Implement `src/core/registry.ts`**
 
 Create `src/core/registry.ts`:
+
 ```ts
 import type { OmniModule } from './types';
 import dark from '../modules/dark';
@@ -1459,6 +1539,7 @@ git commit -m "feat(core): add module registry with dark module registered"
 ## Task 11: Popup Shell
 
 **Files:**
+
 - Create: `src/popup/index.html`
 - Create: `src/popup/main.ts`
 - Create: `src/popup/App.svelte`
@@ -1466,6 +1547,7 @@ git commit -m "feat(core): add module registry with dark module registered"
 - [ ] **Step 1: Write `src/popup/index.html`**
 
 Create `src/popup/index.html`:
+
 ```html
 <!doctype html>
 <html lang="en">
@@ -1473,7 +1555,13 @@ Create `src/popup/index.html`:
     <meta charset="UTF-8" />
     <title>Omni</title>
     <style>
-      html, body { margin: 0; width: 340px; background: #15151a; color: #eee; }
+      html,
+      body {
+        margin: 0;
+        width: 340px;
+        background: #15151a;
+        color: #eee;
+      }
     </style>
   </head>
   <body>
@@ -1486,6 +1574,7 @@ Create `src/popup/index.html`:
 - [ ] **Step 2: Write `src/popup/main.ts`**
 
 Create `src/popup/main.ts`:
+
 ```ts
 import { mount } from 'svelte';
 import App from './App.svelte';
@@ -1499,6 +1588,7 @@ mount(App, { target });
 - [ ] **Step 3: Write `src/popup/App.svelte`**
 
 Create `src/popup/App.svelte`:
+
 ```svelte
 <script lang="ts">
   import { modules } from '../core/registry';
@@ -1538,9 +1628,11 @@ Create `src/popup/App.svelte`:
 - [ ] **Step 4: Verify typecheck + tests still pass**
 
 Run:
+
 ```bash
 pnpm typecheck && pnpm test
 ```
+
 Expected: exit 0. All previously passing tests still pass.
 
 - [ ] **Step 5: Commit**
@@ -1555,11 +1647,13 @@ git commit -m "feat(popup): add tab-shell App.svelte that iterates module regist
 ## Task 12: Background Service Worker
 
 **Files:**
+
 - Create: `src/background/index.ts`
 
 - [ ] **Step 1: Write `src/background/index.ts`**
 
 Create `src/background/index.ts`:
+
 ```ts
 import { modules } from '../core/registry';
 import { readStorage, writeStorage, onStorageChange, DEFAULT_STORAGE } from '../core/storage';
@@ -1591,9 +1685,11 @@ chrome.runtime.onInstalled.addListener(() => {
 - [ ] **Step 2: Verify typecheck**
 
 Run:
+
 ```bash
 pnpm typecheck
 ```
+
 Expected: exit 0.
 
 - [ ] **Step 3: Commit**
@@ -1608,14 +1704,17 @@ git commit -m "feat(background): wire module onBackground hooks with shared ctx"
 ## Task 13: Build Verification + README
 
 **Files:**
+
 - Create: `README.md`
 
 - [ ] **Step 1: Run production build**
 
 Run:
+
 ```bash
 pnpm build
 ```
+
 Expected: `dist/` is produced with `manifest.json`, bundled popup, content, and background scripts. No build errors.
 
 If CRXJS complains about content script paths, ensure `src/modules/dark/content.ts` is referenced as a module entry (CRXJS picks it up automatically via `registerContentScripts` call in source, but may need an entry in `vite.config.ts` — add `build.rollupOptions.input` with content script path if needed).
@@ -1623,15 +1722,17 @@ If CRXJS complains about content script paths, ensure `src/modules/dark/content.
 - [ ] **Step 2: Run full test suite with coverage**
 
 Run:
+
 ```bash
 pnpm test:coverage
 ```
+
 Expected: all tests pass; coverage report shows ≥80% on `src/core/` and `src/modules/dark/{service,storage,css}.ts`.
 
 - [ ] **Step 3: Write `README.md`**
 
 Create `README.md`:
-```markdown
+
 # Omni Extension
 
 Multi-tool browser extension (Manifest V3). First module: **Dark Mode** with per-site overrides.
@@ -1644,6 +1745,7 @@ pnpm build
 ```
 
 Then in Chrome:
+
 1. Open `chrome://extensions`
 2. Enable **Developer mode**
 3. Click **Load unpacked** and select the `dist/` folder
@@ -1666,6 +1768,7 @@ pnpm test:coverage
 ## Features
 
 ### Dark Mode
+
 Per-site (eTLD+1) dark mode via CSS filter inversion.
 
 - Toggle current site — click `This site only`
@@ -1674,6 +1777,7 @@ Per-site (eTLD+1) dark mode via CSS filter inversion.
 - Settings sync via `chrome.storage.sync`
 
 ### Known limitations
+
 - Uses `filter: invert(1) hue-rotate(180deg)` — not a color-aware dark mode. Looks ugly on already-dark sites, sites with heavy gradients/shadows, and can break `position: fixed` sticky headers on some layouts.
 - Per-site rules use eTLD+1 granularity. `docs.github.com` and `github.com` share one setting.
 - No E2E tests yet.
@@ -1683,6 +1787,7 @@ Per-site (eTLD+1) dark mode via CSS filter inversion.
 See [`docs/superpowers/specs/2026-04-21-omni-extension-design.md`](docs/superpowers/specs/2026-04-21-omni-extension-design.md).
 
 Adding a new module:
+
 1. Create `src/modules/<name>/` with `index.ts` exporting an `OmniModule`
 2. Import + register in `src/core/registry.ts`
 
@@ -1691,7 +1796,6 @@ No shell code changes required.
 ## License
 
 MIT
-```
 
 - [ ] **Step 4: Commit**
 
@@ -1752,6 +1856,7 @@ git tag v0.1.0
 ## Self-Review Notes
 
 **Spec coverage check (spec §§ → task):**
+
 - §2 In-scope MV3 scaffolding → Task 0
 - §3.3 Module contract (OmniModule type) → Task 1 + Task 9
 - §4 Storage schema → Task 1 + Task 3 + Task 4
@@ -1770,6 +1875,7 @@ git tag v0.1.0
 **Placeholder scan:** none. Every code step has complete code. Every command has exact expected output.
 
 **Type consistency check:**
+
 - `OmniModule` shape in Task 1 matches usage in Task 9 and Task 10
 - `EnrolledSet` discriminated union defined in Task 5, consumed correctly in Task 9
 - `ContentMessage` types in Task 7 match the messages sent from Task 8 popup and Task 9 reconcile()

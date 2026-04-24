@@ -13,7 +13,11 @@
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "typecheck": "tsc --noEmit",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.28",
@@ -25,6 +29,8 @@
     "@types/node": "^25.6.0",
     "@vitest/coverage-v8": "^2.1.8",
     "happy-dom": "^15.11.7",
+    "oxfmt": "^0.46.0",
+    "oxlint": "^1.61.0",
     "sinon-chrome": "^3.0.1",
     "svelte": "^5.19.0",
     "svelte-check": "^4.1.4",

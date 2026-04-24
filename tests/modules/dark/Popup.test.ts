@@ -10,7 +10,9 @@ describe('Dark Popup', () => {
     chrome.flush();
     chrome.storage.sync.get.callsFake(() => Promise.resolve({ omni: DEFAULT_STORAGE }));
     chrome.storage.sync.set.callsFake(() => Promise.resolve());
-    chrome.tabs.query.callsFake(() => Promise.resolve([{ id: 1, url: 'https://github.com/kevin/repo' }]));
+    chrome.tabs.query.callsFake(() =>
+      Promise.resolve([{ id: 1, url: 'https://github.com/kevin/repo' }]),
+    );
     chrome.tabs.sendMessage.callsFake(() => Promise.resolve());
   });
 

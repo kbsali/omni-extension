@@ -36,6 +36,6 @@ export function toExportFilename(domain: string, date: Date): string {
 }
 
 export function toExportJson(cookies: readonly chrome.cookies.Cookie[]): string {
-  const sorted = [...cookies].sort((a, b) => a.name.localeCompare(b.name));
+  const sorted = [...cookies].toSorted((a, b) => a.name.localeCompare(b.name));
   return JSON.stringify(sorted, null, 2);
 }
