@@ -15,6 +15,7 @@
 ## File Structure
 
 **Create:**
+
 - `src/modules/cookies/README.md` — 10-line module spec
 - `src/modules/cookies/storage.ts` — `CookiesStorage` + `COOKIES_DEFAULTS`
 - `src/modules/cookies/service.ts` — pure helpers (`buildCookieUrl`, `parseExpires`, `formatExpiresInput`, `toExportFilename`, `toExportJson`)
@@ -24,6 +25,7 @@
 - `tests/modules/cookies/service.test.ts`
 
 **Modify:**
+
 - `src/core/types.ts` — extend `OmniStorage.modules` with `cookies: CookiesStorage`
 - `src/core/storage.ts` — extend `DEFAULT_STORAGE.modules` with `cookies: {}`
 - `src/core/registry.ts` — import + append `cookies` module
@@ -41,6 +43,7 @@
 ## Task 1: Storage slice (type + defaults + tests)
 
 **Files:**
+
 - Create: `src/modules/cookies/storage.ts`
 - Create: `tests/modules/cookies/storage.test.ts`
 - Modify: `src/core/types.ts`
@@ -151,9 +154,7 @@ export async function writeStorage(storage: OmniStorage): Promise<void> {
   await chrome.storage.sync.set({ [STORAGE_KEY]: storage });
 }
 
-export function onStorageChange(
-  cb: (next: OmniStorage, prev: OmniStorage) => void,
-): void {
+export function onStorageChange(cb: (next: OmniStorage, prev: OmniStorage) => void): void {
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName !== 'sync') return;
     const change = changes[STORAGE_KEY];
@@ -183,6 +184,7 @@ git commit -m "feat(cookies): add storage slice scaffolding"
 ## Task 2: Service — buildCookieUrl
 
 **Files:**
+
 - Create: `src/modules/cookies/service.ts`
 - Create: `tests/modules/cookies/service.test.ts`
 
@@ -196,28 +198,25 @@ import { buildCookieUrl } from '../../../src/modules/cookies/service';
 
 describe('modules/cookies/service — buildCookieUrl', () => {
   it('uses https when secure=true', () => {
-    expect(buildCookieUrl({ domain: 'x.com', path: '/', secure: true }))
-      .toBe('https://x.com/');
+    expect(buildCookieUrl({ domain: 'x.com', path: '/', secure: true })).toBe('https://x.com/');
   });
 
   it('uses http when secure=false', () => {
-    expect(buildCookieUrl({ domain: 'x.com', path: '/', secure: false }))
-      .toBe('http://x.com/');
+    expect(buildCookieUrl({ domain: 'x.com', path: '/', secure: false })).toBe('http://x.com/');
   });
 
   it('strips a leading dot from the domain', () => {
-    expect(buildCookieUrl({ domain: '.x.com', path: '/', secure: true }))
-      .toBe('https://x.com/');
+    expect(buildCookieUrl({ domain: '.x.com', path: '/', secure: true })).toBe('https://x.com/');
   });
 
   it('defaults path to "/" when empty', () => {
-    expect(buildCookieUrl({ domain: 'x.com', path: '', secure: true }))
-      .toBe('https://x.com/');
+    expect(buildCookieUrl({ domain: 'x.com', path: '', secure: true })).toBe('https://x.com/');
   });
 
   it('preserves non-root paths', () => {
-    expect(buildCookieUrl({ domain: 'x.com', path: '/api', secure: true }))
-      .toBe('https://x.com/api');
+    expect(buildCookieUrl({ domain: 'x.com', path: '/api', secure: true })).toBe(
+      'https://x.com/api',
+    );
   });
 });
 ```
@@ -261,6 +260,7 @@ git commit -m "feat(cookies): add buildCookieUrl helper"
 These two are inverses of each other (datetime-local string ↔ unix seconds). Implement together so the round-trip test is meaningful.
 
 **Files:**
+
 - Modify: `src/modules/cookies/service.ts`
 - Modify: `tests/modules/cookies/service.test.ts`
 
@@ -359,6 +359,7 @@ git commit -m "feat(cookies): add parseExpires/formatExpiresInput helpers"
 ## Task 4: Service — toExportFilename
 
 **Files:**
+
 - Modify: `src/modules/cookies/service.ts`
 - Modify: `tests/modules/cookies/service.test.ts`
 
@@ -417,6 +418,7 @@ git commit -m "feat(cookies): add toExportFilename helper"
 ## Task 5: Service — toExportJson
 
 **Files:**
+
 - Modify: `src/modules/cookies/service.ts`
 - Modify: `tests/modules/cookies/service.test.ts`
 
@@ -500,6 +502,7 @@ git commit -m "feat(cookies): add toExportJson helper"
 No component tests (per spec — manual smoke test only). Write the full file in one step.
 
 **Files:**
+
 - Create: `src/modules/cookies/Popup.svelte`
 
 - [ ] **Step 1: Create Popup.svelte**
@@ -863,6 +866,7 @@ git commit -m "feat(cookies): add Popup.svelte UI"
 ## Task 7: Module index.ts + README.md
 
 **Files:**
+
 - Create: `src/modules/cookies/index.ts`
 - Create: `src/modules/cookies/README.md`
 
@@ -896,12 +900,15 @@ Create `src/modules/cookies/README.md`:
 Lightweight cookie viewer / editor scoped to the current tab's eTLD+1.
 
 ## Storage shape
+
 No persistent per-module state. See `./storage.ts` → `CookiesStorage` (empty record).
 
 ## Domain matching
+
 eTLD+1 via `../../core/domain.ts`. Chrome's `cookies.getAll({ domain })` implicitly includes subdomains.
 
 ## Known limitations
+
 - Current site only. Switch tabs to switch sites.
 - Editor surfaces `value` and `expires` only; advanced fields (`path`, `domain`, `httpOnly`, `secure`, `sameSite`) are read-only.
 - No live updates — click Refresh after a site mutates cookies while the popup is open.
@@ -926,6 +933,7 @@ git commit -m "feat(cookies): add module index and README"
 ## Task 8: Wire up — manifest permission + registry + registry test
 
 **Files:**
+
 - Modify: `manifest.config.ts`
 - Modify: `src/core/registry.ts`
 - Modify: `tests/core/registry.test.ts`

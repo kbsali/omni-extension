@@ -13,6 +13,7 @@ The first shipped module is **Dark Mode**: a per-site dark-mode toggle that pers
 ## 2. Scope (v1)
 
 **In scope:**
+
 - MV3 extension scaffolding with Svelte 5 + Vite + CRXJS
 - Module registry pattern supporting future feature tabs
 - Dark Mode module:
@@ -25,6 +26,7 @@ The first shipped module is **Dark Mode**: a per-site dark-mode toggle that pers
 - Vitest unit tests with mocked `chrome.*` APIs
 
 **Out of scope for v1:**
+
 - Other modules (Cookies, Smiley keyboard, GDPR, Youtube customizer) — scaffolding supports them; implementations come later as separate specs
 - Dark-Reader-style dynamic color analysis (deferred; v1 uses simple CSS filter invert)
 - Playwright E2E tests (deferred per user preference for personal projects)
@@ -90,16 +92,16 @@ Every module exports this shape from `src/modules/<name>/index.ts`:
 import type { ComponentType } from 'svelte';
 
 export interface OmniModule {
-  id: string;                                // unique, e.g. 'dark'
-  label: string;                             // tab label, e.g. 'Dark'
-  icon: string;                              // emoji or inline SVG string
-  Popup: ComponentType;                      // Svelte component shown in its tab
+  id: string; // unique, e.g. 'dark'
+  label: string; // tab label, e.g. 'Dark'
+  icon: string; // emoji or inline SVG string
+  Popup: ComponentType; // Svelte component shown in its tab
   onBackground?: (ctx: BackgroundCtx) => void;
-  storageDefaults: Record<string, unknown>;  // merged into initial storage for modules[id]
+  storageDefaults: Record<string, unknown>; // merged into initial storage for modules[id]
 }
 
 export interface BackgroundCtx {
-  storage: TypedStorage;                     // from core/storage
+  storage: TypedStorage; // from core/storage
   onStorageChange: (key: string, cb: (value: unknown) => void) => void;
 }
 ```
@@ -122,7 +124,7 @@ Single root key `omni` in `chrome.storage.sync`, namespaced per module:
 type Mode = 'dark' | 'light' | 'default';
 
 interface OmniStorage {
-  version: 1;                        // for future migrations
+  version: 1; // for future migrations
   modules: {
     dark: DarkStorage;
     // future module slices go here
@@ -130,13 +132,14 @@ interface OmniStorage {
 }
 
 interface DarkStorage {
-  defaultMode: 'dark' | 'light';     // global fallback
-  brightness: number;                // 0.5–1.0 (shown as 50%–100%)
-  sites: Record<string, Mode>;       // eTLD+1 → explicit override
+  defaultMode: 'dark' | 'light'; // global fallback
+  brightness: number; // 0.5–1.0 (shown as 50%–100%)
+  sites: Record<string, Mode>; // eTLD+1 → explicit override
 }
 ```
 
 **Defaults on first install:**
+
 ```ts
 { version: 1, modules: { dark: { defaultMode: 'light', brightness: 1.0, sites: {} } } }
 ```
@@ -163,8 +166,13 @@ html {
   filter: invert(1) hue-rotate(180deg) brightness(var(--omni-brightness, 1));
   background: white;
 }
-img, video, picture, iframe, svg, canvas,
-[style*="background-image"] {
+img,
+video,
+picture,
+iframe,
+svg,
+canvas,
+[style*='background-image'] {
   filter: invert(1) hue-rotate(180deg);
 }
 ```

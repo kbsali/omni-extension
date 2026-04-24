@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { applyDarkFilter, removeDarkFilter, updateBrightness } from '../../../src/modules/dark/content';
+import {
+  applyDarkFilter,
+  removeDarkFilter,
+  updateBrightness,
+} from '../../../src/modules/dark/content';
 import { STYLE_ELEMENT_ID } from '../../../src/modules/dark/css';
 
 describe('dark/content DOM helpers', () => {

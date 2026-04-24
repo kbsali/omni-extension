@@ -45,7 +45,11 @@ export function diffRegistrations(prev: EnrolledSet, next: EnrolledSet): Registr
     if (excludesChanged) {
       return { toRegister: next, toUnregister: ['__global__'], fullReregister: true };
     }
-    return { toRegister: { mode: 'per-site', domains: [] }, toUnregister: [], fullReregister: false };
+    return {
+      toRegister: { mode: 'per-site', domains: [] },
+      toUnregister: [],
+      fullReregister: false,
+    };
   }
 
   const prevS = prev as Extract<EnrolledSet, { mode: 'per-site' }>;

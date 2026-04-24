@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { readStorage, writeStorage, onStorageChange, DEFAULT_STORAGE } from '../../src/core/storage';
+import {
+  readStorage,
+  writeStorage,
+  onStorageChange,
+  DEFAULT_STORAGE,
+} from '../../src/core/storage';
 
 declare const chrome: any;
 
@@ -18,7 +23,9 @@ describe('core/storage', () => {
     it('returns stored value under the "omni" key', async () => {
       const stored = {
         version: 1,
-        modules: { dark: { defaultMode: 'dark', brightness: 0.9, sites: { 'github.com': 'dark' } } },
+        modules: {
+          dark: { defaultMode: 'dark', brightness: 0.9, sites: { 'github.com': 'dark' } },
+        },
       };
       chrome.storage.sync.get.callsFake(() => Promise.resolve({ omni: stored }));
       const storage = await readStorage();
@@ -44,7 +51,10 @@ describe('core/storage', () => {
       const listener = chrome.storage.onChanged.addListener.firstCall.args[0];
 
       const newValue = { ...DEFAULT_STORAGE };
-      const oldValue = { ...DEFAULT_STORAGE, modules: { dark: { ...DEFAULT_STORAGE.modules.dark, brightness: 0.8 } } };
+      const oldValue = {
+        ...DEFAULT_STORAGE,
+        modules: { dark: { ...DEFAULT_STORAGE.modules.dark, brightness: 0.8 } },
+      };
       listener({ omni: { newValue, oldValue } }, 'sync');
 
       expect(cb).toHaveBeenCalledWith(newValue, oldValue);

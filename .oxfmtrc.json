@@ -8,11 +8,5 @@
   "trailingComma": "all",
   "arrowParens": "always",
   "endOfLine": "lf",
-  "ignorePatterns": [
-    "dist/",
-    "coverage/",
-    "test-results/",
-    "playwright-report/",
-    "pnpm-lock.yaml"
-  ]
+  "ignorePatterns": ["dist/", "coverage/", "test-results/", "playwright-report/", "pnpm-lock.yaml"]
 }

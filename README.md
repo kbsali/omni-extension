@@ -10,6 +10,7 @@ pnpm build
 ```
 
 Then in Chrome:
+
 1. Open `chrome://extensions`
 2. Enable **Developer mode**
 3. Click **Load unpacked** and select the `dist/` folder
@@ -32,6 +33,7 @@ pnpm test:coverage
 ## Features
 
 ### Dark Mode
+
 Per-site (eTLD+1) dark mode via CSS filter inversion.
 
 - Toggle current site — click `This site only`
@@ -40,6 +42,7 @@ Per-site (eTLD+1) dark mode via CSS filter inversion.
 - Settings sync via `chrome.storage.sync`
 
 ### Known limitations
+
 - Uses `filter: invert(1) hue-rotate(180deg)` — not a color-aware dark mode. Looks ugly on already-dark sites, sites with heavy gradients/shadows, and can break `position: fixed` sticky headers on some layouts.
 - Per-site rules use eTLD+1 granularity. `docs.github.com` and `github.com` share one setting.
 - No E2E tests yet.
@@ -49,6 +52,7 @@ Per-site (eTLD+1) dark mode via CSS filter inversion.
 See [`docs/superpowers/specs/2026-04-21-omni-extension-design.md`](docs/superpowers/specs/2026-04-21-omni-extension-design.md).
 
 Adding a new module:
+
 1. Create `src/modules/<name>/` with `index.ts` exporting an `OmniModule`
 2. Import + register in `src/core/registry.ts`
 

@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { setSiteMode, setDefaultMode, setBrightness, cycleSiteMode, DARK_DEFAULTS } from '../../../src/modules/dark/storage';
+import {
+  setSiteMode,
+  setDefaultMode,
+  setBrightness,
+  cycleSiteMode,
+  DARK_DEFAULTS,
+} from '../../../src/modules/dark/storage';
 import { DEFAULT_STORAGE } from '../../../src/core/storage';
 
 describe('modules/dark/storage', () => {
