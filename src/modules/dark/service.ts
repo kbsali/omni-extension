@@ -16,13 +16,13 @@ export function computeEnrolledDomains(storage: OmniStorage): EnrolledSet {
     const excludeDomains = Object.entries(sites)
       .filter(([, mode]) => mode === 'light')
       .map(([domain]) => domain)
-      .sort();
+      .toSorted();
     return { mode: 'global', excludeDomains };
   }
   const domains = Object.entries(sites)
     .filter(([, mode]) => mode === 'dark')
     .map(([domain]) => domain)
-    .sort();
+    .toSorted();
   return { mode: 'per-site', domains };
 }
 

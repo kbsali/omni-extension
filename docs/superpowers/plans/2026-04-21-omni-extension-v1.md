@@ -1733,7 +1733,6 @@ Expected: all tests pass; coverage report shows ≥80% on `src/core/` and `src/m
 
 Create `README.md`:
 
-````markdown
 # Omni Extension
 
 Multi-tool browser extension (Manifest V3). First module: **Dark Mode** with per-site overrides.
@@ -1744,7 +1743,6 @@ Multi-tool browser extension (Manifest V3). First module: **Dark Mode** with per
 pnpm install
 pnpm build
 ```
-````
 
 Then in Chrome:
 
@@ -1799,14 +1797,12 @@ No shell code changes required.
 
 MIT
 
-````
-
 - [ ] **Step 4: Commit**
 
 ```bash
 git add README.md
 git commit -m "docs: add README with install, develop, test, and architecture pointers"
-````
+```
 
 ---
 
