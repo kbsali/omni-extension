@@ -517,15 +517,17 @@ Imports `emojibase-data/en/compact.json`, drops Component (skin-tone) entries, s
 
 - [ ] **Step 1: Create `src/modules/emoji/data.ts`**
 
+Note: in emojibase-data v17+ the `compact.json` file is stripped down to `{hexcode, label, unicode}` (no tags). We use `data.json` instead, which contains `label` (CLDR annotation) + `tags` + `order` + `group`. Entries without a `group` field (regional-indicator letters etc.) are dropped; entries with `group === 2` (Component / skin-tone swatches) are also dropped.
+
 ```ts
 import type { EmojiEntry } from './service';
-import compactRaw from 'emojibase-data/en/compact.json';
+import dataRaw from 'emojibase-data/en/data.json';
 
 // Minimal local shape — avoids depending on the `emojibase` types package.
-// If the emojibase-data shape drifts (rare), `pnpm typecheck` will flag it.
-interface CompactEmojiRaw {
+// Field names match emojibase-data v17 (label, tags, order, group).
+interface EmojibaseEntry {
   emoji: string;
-  annotation: string;
+  label: string;
   tags?: string[];
   order?: number;
   group?: number;
@@ -535,7 +537,7 @@ interface CompactEmojiRaw {
 // We drop those since v1 has no skin-tone picker.
 const COMPONENT_GROUP = 2;
 
-const raw = compactRaw as unknown as CompactEmojiRaw[];
+const raw = dataRaw as unknown as EmojibaseEntry[];
 
 export const EMOJIS: readonly EmojiEntry[] = raw
   .filter((e) => e.group !== undefined && e.group !== COMPONENT_GROUP)
@@ -543,7 +545,7 @@ export const EMOJIS: readonly EmojiEntry[] = raw
   .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
   .map((e) => ({
     char: e.emoji,
-    name: e.annotation.toLowerCase(),
+    name: e.label.toLowerCase(),
     keywords: (e.tags ?? []).map((t) => t.toLowerCase()),
   }));
 ```
