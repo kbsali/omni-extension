@@ -9,13 +9,20 @@ async function getActiveTab(): Promise<chrome.tabs.Tab | undefined> {
 }
 
 async function openPopupFocusedOn(moduleId: string): Promise<void> {
+  console.log('[omni/shortcuts] openPopupFocusedOn:', moduleId);
   await setPendingTab(moduleId);
+  if (typeof chrome.action?.openPopup !== 'function') {
+    console.error(
+      '[omni/shortcuts] chrome.action.openPopup is not available in this Chrome build. ' +
+        'Needs Chrome 127+.',
+    );
+    return;
+  }
   try {
     await chrome.action.openPopup();
+    console.log('[omni/shortcuts] openPopup resolved');
   } catch (err) {
-    // Chrome <127 or no focused window. A shortcut press satisfies the
-    // user-gesture requirement, so failure here is rare.
-    console.warn('[omni/shortcuts] openPopup failed:', err);
+    console.error('[omni/shortcuts] openPopup threw:', err);
   }
 }
 
@@ -42,6 +49,7 @@ export function buildDispatcher(
   );
 
   return async (command: string) => {
+    console.log('[omni/shortcuts] onCommand received:', command);
     const shortcut = byCommand.get(command);
     if (!shortcut) {
       console.warn('[omni/shortcuts] unknown command:', command);
@@ -49,8 +57,9 @@ export function buildDispatcher(
     }
     try {
       await shortcut.onInvoke(ctx);
+      console.log('[omni/shortcuts] onInvoke completed:', command);
     } catch (err) {
-      console.warn(`[omni/shortcuts] ${command} failed:`, err);
+      console.error(`[omni/shortcuts] ${command} onInvoke threw:`, err);
     }
   };
 }

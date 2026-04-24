@@ -76,7 +76,8 @@ describe('background/shortcuts — buildDispatcher', () => {
   });
 
   it('catches errors thrown by onInvoke and logs them', async () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const log = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     const failing = vi.fn().mockRejectedValue(new Error('boom'));
     const modules = [
       makeModule('a', {
@@ -90,7 +91,8 @@ describe('background/shortcuts — buildDispatcher', () => {
 
     await expect(dispatch('cmd')).resolves.toBeUndefined();
     expect(failing).toHaveBeenCalled();
-    expect(warn).toHaveBeenCalled();
-    warn.mockRestore();
+    expect(error).toHaveBeenCalled();
+    error.mockRestore();
+    log.mockRestore();
   });
 });
