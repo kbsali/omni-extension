@@ -86,8 +86,13 @@ No new manifest permissions. The popup is a user-gesture context, so `navigator.
 import compact from 'emojibase-data/en/compact.json';
 
 export interface EmojiEntry {
+<<<<<<< HEAD
   char: string; // e.g. "😀"
   name: string; // primary display name, lowercase, e.g. "grinning face"
+=======
+  char: string;       // e.g. "😀"
+  name: string;       // primary display name, lowercase, e.g. "grinning face"
+>>>>>>> b76bdd8 (docs: switch emoji module to emojibase-data dataset)
   keywords: string[]; // from emojibase `tags`, lowercased
 }
 
