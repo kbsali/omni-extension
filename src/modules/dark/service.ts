@@ -1,4 +1,4 @@
-import type { OmniStorage } from '../../core/types';
+import type { Mode, OmniStorage } from '../../core/types';
 
 export type EnrolledSet =
   | { mode: 'per-site'; domains: string[] }
@@ -67,4 +67,10 @@ export function diffRegistrations(prev: EnrolledSet, next: EnrolledSet): Registr
 function allDomainIds(set: EnrolledSet): string[] {
   if (set.mode === 'global') return ['__global__'];
   return [...set.domains];
+}
+
+export function nextSiteValueOnToggle(current: Mode, defaultMode: 'dark' | 'light'): Mode {
+  const effective = current === 'dark' || current === 'light' ? current : defaultMode;
+  const nextEffective = effective === 'dark' ? 'light' : 'dark';
+  return nextEffective === defaultMode ? 'default' : nextEffective;
 }

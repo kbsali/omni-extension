@@ -3,7 +3,7 @@
   import { readStorage, writeStorage, DEFAULT_STORAGE } from '../../core/storage';
   import { extractETLD1 } from '../../core/domain';
   import { setSiteMode, setDefaultMode, setBrightness } from './storage';
-  import { resolveMode } from './service';
+  import { resolveMode, nextSiteValueOnToggle } from './service';
   import type { OmniStorage } from '../../core/types';
 
   let storage = $state<OmniStorage>(DEFAULT_STORAGE);
@@ -27,10 +27,8 @@
 
   function onToggleSite() {
     if (!currentDomain) return;
-    const current = resolveMode(storage, currentDomain);
-    const next = current === 'dark' ? 'light' : 'dark';
-    const defaultMode = storage.modules.dark.defaultMode;
-    const siteValue = next === defaultMode ? 'default' : next;
+    const current = storage.modules.dark.sites[currentDomain] ?? 'default';
+    const siteValue = nextSiteValueOnToggle(current, storage.modules.dark.defaultMode);
     update(setSiteMode(storage, currentDomain, siteValue));
   }
 

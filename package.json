@@ -19,6 +19,9 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check"
   },
+  "dependencies": {
+    "emojibase-data": "^17.0.0"
+  },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.28",
     "@playwright/test": "^1.59.1",

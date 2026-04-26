@@ -1,7 +1,8 @@
 import type { OmniStorage } from './types';
 import { COOKIES_DEFAULTS } from '../modules/cookies/storage';
+import { EMOJI_DEFAULTS } from '../modules/emoji/storage';
 
-const STORAGE_KEY = 'omni';
+export const STORAGE_KEY = 'omni';
 
 export const DEFAULT_STORAGE: OmniStorage = {
   version: 1,
@@ -12,6 +13,7 @@ export const DEFAULT_STORAGE: OmniStorage = {
       sites: {},
     },
     cookies: { ...COOKIES_DEFAULTS },
+    emoji: { ...EMOJI_DEFAULTS },
   },
 };
 

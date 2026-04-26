@@ -3,8 +3,10 @@ import {
   resolveMode,
   computeEnrolledDomains,
   diffRegistrations,
+  nextSiteValueOnToggle,
 } from '../../../src/modules/dark/service';
 import { COOKIES_DEFAULTS } from '../../../src/modules/cookies/storage';
+import { EMOJI_DEFAULTS } from '../../../src/modules/emoji/storage';
 import type { OmniStorage } from '../../../src/core/types';
 
 const baseStorage = (): OmniStorage => ({
@@ -12,6 +14,7 @@ const baseStorage = (): OmniStorage => ({
   modules: {
     dark: { defaultMode: 'light', brightness: 1.0, sites: {} },
     cookies: { ...COOKIES_DEFAULTS },
+    emoji: { ...EMOJI_DEFAULTS },
   },
 });
 
@@ -84,5 +87,33 @@ describe('diffRegistrations', () => {
     const next = { mode: 'global' as const, excludeDomains: ['b.com'] };
     const diff = diffRegistrations(prev, next);
     expect(diff.fullReregister).toBe(true);
+  });
+});
+
+describe('dark/service — nextSiteValueOnToggle', () => {
+  it('forces dark when currently default on a light default', () => {
+    expect(nextSiteValueOnToggle('default', 'light')).toBe('dark');
+  });
+
+  it('clears override when explicit dark flipped to light on a light default', () => {
+    // effective dark → next effective light; since light === defaultMode, store 'default'
+    expect(nextSiteValueOnToggle('dark', 'light')).toBe('default');
+  });
+
+  it('forces dark when explicit light on a light default', () => {
+    // effective light → next effective dark; store the override
+    expect(nextSiteValueOnToggle('light', 'light')).toBe('dark');
+  });
+
+  it('forces light when currently default on a dark default', () => {
+    expect(nextSiteValueOnToggle('default', 'dark')).toBe('light');
+  });
+
+  it('clears override when explicit light flipped to dark on a dark default', () => {
+    expect(nextSiteValueOnToggle('light', 'dark')).toBe('default');
+  });
+
+  it('forces light when explicit dark on a dark default', () => {
+    expect(nextSiteValueOnToggle('dark', 'dark')).toBe('light');
   });
 });
