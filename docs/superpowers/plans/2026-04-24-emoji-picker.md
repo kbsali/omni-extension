@@ -38,7 +38,6 @@ Expected: `Switched to a new branch 'feat/emoji-picker'`.
 ## Task 1: Install `emojibase-data` dependency
 
 **Files:**
-
 - Modify: `package.json`
 - Modify: `pnpm-lock.yaml`
 
@@ -72,7 +71,6 @@ git commit -m "chore: add emojibase-data dependency"
 The emoji storage is a single `recents: string[]` plus a cap constant. Types + defaults live in `src/modules/emoji/storage.ts`. Tests assert defaults are correct and that `DEFAULT_STORAGE` wires the slice in.
 
 **Files:**
-
 - Create: `src/modules/emoji/storage.ts`
 - Modify: `src/core/types.ts`
 - Modify: `src/core/storage.ts`
@@ -231,7 +229,6 @@ git commit -m "feat(emoji): add storage slice and defaults"
 Pure immutable update helper. No chrome deps. Lives in `service.ts` (spec §5). Tests in `service.test.ts`.
 
 **Files:**
-
 - Create: `src/modules/emoji/service.ts`
 - Create: `tests/modules/emoji/service.test.ts`
 
@@ -312,7 +309,6 @@ git commit -m "feat(emoji): add pushRecent helper"
 Ranked filter over `EmojiEntry[]`. Defines the `EmojiEntry` interface (consumed later by `data.ts`).
 
 **Files:**
-
 - Modify: `src/modules/emoji/service.ts`
 - Modify: `tests/modules/emoji/service.test.ts`
 
@@ -512,7 +508,6 @@ git commit -m "feat(emoji): add fuzzyFilter with scored ranking"
 Imports `emojibase-data/en/compact.json`, drops Component (skin-tone) entries, sorts by emojibase's `order`, and projects to our `EmojiEntry` shape.
 
 **Files:**
-
 - Create: `src/modules/emoji/data.ts`
 
 - [ ] **Step 1: Create `src/modules/emoji/data.ts`**
@@ -586,7 +581,6 @@ git commit -m "feat(emoji): load emojibase-data into EMOJIS array"
 Add `index.ts` for the module, register it in `src/core/registry.ts`, and update the registry test.
 
 **Files:**
-
 - Create: `src/modules/emoji/index.ts`
 - Modify: `src/core/registry.ts`
 - Modify: `tests/core/registry.test.ts`
@@ -699,7 +693,6 @@ git commit -m "feat(emoji): register module in core registry"
 Full implementation of the popup component. Replaces the placeholder from Task 6. No unit tests for the Svelte component; verify manually in the browser after Task 9's build.
 
 **Files:**
-
 - Modify: `src/modules/emoji/Popup.svelte`
 
 - [ ] **Step 1: Write the full component**
@@ -1041,7 +1034,6 @@ pnpm build
 Expected: `dist/` produced without errors. Load the unpacked extension in `chrome://extensions` (or reload if already loaded), click the popup, switch to the **Emoji** tab.
 
 Verify:
-
 - Search input is focused on popup open.
 - Typing `grin` filters to grinning faces; first result highlighted.
 - Arrow keys (Left/Right/Up/Down) move the highlight.
@@ -1064,7 +1056,6 @@ git commit -m "feat(emoji): implement search UI with keyboard flow"
 ## Task 8: Module README + root README update
 
 **Files:**
-
 - Create: `src/modules/emoji/README.md`
 - Modify: `README.md` (root)
 
