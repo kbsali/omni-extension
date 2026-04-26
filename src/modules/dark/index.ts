@@ -27,7 +27,7 @@ const dark: OmniModule = {
   shortcut: {
     commandName: 'toggle-dark',
     description: 'Toggle dark mode for current site',
-    suggestedKey: 'Alt+Shift+D',
+    suggestedKey: 'Ctrl+Shift+Period',
     onInvoke: toggleDarkForCurrentSite,
   },
 };

@@ -25,11 +25,11 @@ export default defineManifest({
   },
   commands: {
     'open-emoji': {
-      suggested_key: { default: 'Alt+Shift+E', mac: 'Alt+Shift+E' },
+      suggested_key: { default: 'Ctrl+Shift+Space', mac: 'Ctrl+Shift+Space' },
       description: 'Open emoji picker',
     },
     'open-cookies': {
-      suggested_key: { default: 'Alt+Shift+K', mac: 'Alt+Shift+K' },
+      suggested_key: { default: 'Ctrl+Shift+Period', mac: 'Ctrl+Shift+Period' },
       description: 'Open cookies editor',
     },
     'toggle-dark': {

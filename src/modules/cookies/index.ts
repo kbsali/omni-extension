@@ -11,7 +11,7 @@ const cookies: OmniModule = {
   shortcut: {
     commandName: 'open-cookies',
     description: 'Open cookies editor',
-    suggestedKey: 'Alt+Shift+K',
+    suggestedKey: 'Ctrl+Shift+Comma',
     onInvoke: (ctx) => ctx.openPopupFocusedOn('cookies'),
   },
 };

@@ -11,7 +11,7 @@ const emoji: OmniModule = {
   shortcut: {
     commandName: 'open-emoji',
     description: 'Open emoji picker',
-    suggestedKey: 'Alt+Shift+E',
+    suggestedKey: 'Ctrl+Shift+L',
     onInvoke: (ctx) => ctx.openPopupFocusedOn('emoji'),
   },
 };
