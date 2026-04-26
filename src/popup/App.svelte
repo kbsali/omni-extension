@@ -1,8 +1,17 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { modules } from '../core/registry';
+  import { consumePendingTab } from '../core/session';
 
   let active = $state(modules[0]?.id ?? '');
   const activeModule = $derived(modules.find((m) => m.id === active));
+
+  onMount(async () => {
+    const pending = await consumePendingTab();
+    if (pending && modules.some((m) => m.id === pending)) {
+      active = pending;
+    }
+  });
 </script>
 
 <nav class="tabs">

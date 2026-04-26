@@ -17,6 +17,7 @@ const COMPONENT_GROUP = 2;
 
 const raw = dataRaw as unknown as EmojibaseEntry[];
 
+// oxlint-disable-next-line unicorn/prefer-array-to-sorted — toSorted isn't in our TS lib target
 export const EMOJIS: readonly EmojiEntry[] = raw
   .filter((e) => e.group !== undefined && e.group !== COMPONENT_GROUP)
   .slice()

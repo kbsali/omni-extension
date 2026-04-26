@@ -23,4 +23,18 @@ export default defineManifest({
   action: {
     default_popup: 'src/popup/index.html',
   },
+  commands: {
+    'open-emoji': {
+      suggested_key: { default: 'Ctrl+Shift+Space', mac: 'Ctrl+Shift+Space' },
+      description: 'Open emoji picker',
+    },
+    'open-cookies': {
+      suggested_key: { default: 'Ctrl+Shift+Period', mac: 'Ctrl+Shift+Period' },
+      description: 'Open cookies editor',
+    },
+    'toggle-dark': {
+      suggested_key: { default: 'Alt+Shift+D', mac: 'Alt+Shift+D' },
+      description: 'Toggle dark mode for current site',
+    },
+  },
 });

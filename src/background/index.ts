@@ -1,5 +1,6 @@
 import { modules } from '../core/registry';
 import { readStorage, writeStorage, onStorageChange, DEFAULT_STORAGE } from '../core/storage';
+import { wireShortcuts } from './shortcuts';
 import type { BackgroundCtx, OmniStorage } from '../core/types';
 
 console.log('[omni/bg] service worker started');
@@ -24,6 +25,8 @@ const ctx: BackgroundCtx = {
 for (const mod of modules) {
   mod.onBackground?.(ctx);
 }
+
+wireShortcuts();
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log('[omni/bg] onInstalled fired');
