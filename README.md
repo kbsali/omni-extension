@@ -55,9 +55,9 @@ Each module ships a keyboard shortcut. Chrome lets you remap them at `chrome://e
 
 | Shortcut            | Action                                       |
 | ------------------- | -------------------------------------------- |
-| `Ctrl+Shift+Space`  | Open popup on Emoji tab, search focused      |
-| `Ctrl+Shift+Period` | Open popup on Cookies tab                    |
-| `Alt+Shift+D`       | Toggle dark mode for current site (no popup) |
+| `Ctrl+Shift+L`      | Open popup on Emoji tab, search focused      |
+| `Ctrl+Shift+Comma`  | Open popup on Cookies tab                    |
+| `Ctrl+Shift+Period` | Toggle dark mode for current site (no popup) |
 
 Chrome caps user-configurable shortcuts at 4 per extension. One slot is free for a future module.
 
