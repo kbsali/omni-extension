@@ -1,11 +1,9 @@
-.claude/
-.DS_Store
+.claude/settings.local.json
 .env
 .env.*.local
 .env.local
 .vite/
 *.log
-# Playwright artifacts
 coverage/
 dist/
 node_modules/
