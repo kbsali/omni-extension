@@ -25,15 +25,15 @@ export default defineManifest({
   },
   commands: {
     'open-emoji': {
-      suggested_key: { default: 'Ctrl+Shift+Space', mac: 'Ctrl+Shift+Space' },
+      suggested_key: { default: 'Ctrl+Shift+L', mac: 'Ctrl+Shift+L' },
       description: 'Open emoji picker',
     },
     'open-cookies': {
-      suggested_key: { default: 'Ctrl+Shift+Period', mac: 'Ctrl+Shift+Period' },
+      suggested_key: { default: 'Ctrl+Shift+Comma', mac: 'Ctrl+Shift+Comma' },
       description: 'Open cookies editor',
     },
     'toggle-dark': {
-      suggested_key: { default: 'Alt+Shift+D', mac: 'Alt+Shift+D' },
+      suggested_key: { default: 'Ctrl+Shift+Period', mac: 'Ctrl+Shift+Period' },
       description: 'Toggle dark mode for current site',
     },
   },
