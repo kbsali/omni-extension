@@ -2,6 +2,7 @@
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
     "target": "ES2022",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,
@@ -12,10 +13,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "types": ["chrome", "vitest/globals", "svelte"],
-    "baseUrl": ".",
     "paths": {
-      "@core/*": ["src/core/*"],
-      "@modules/*": ["src/modules/*"]
+      "@core/*": ["./src/core/*"],
+      "@modules/*": ["./src/modules/*"]
     }
   },
   "include": ["src/**/*", "tests/**/*", "vite.config.ts", "manifest.config.ts"],
