@@ -23,28 +23,23 @@
     "emojibase-data": "^17.0.0"
   },
   "devDependencies": {
-    "@crxjs/vite-plugin": "^2.4.0",
-    "@playwright/test": "^1.60.0",
+    "@crxjs/vite-plugin": "^2.7.0",
+    "@playwright/test": "^1.61.1",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
-    "@testing-library/svelte": "^5.3.1",
+    "@testing-library/svelte": "^5.4.2",
     "@tsconfig/svelte": "^5.0.8",
-    "@types/chrome": "^0.1.42",
-    "@types/node": "^25.9.1",
-    "@vitest/coverage-v8": "^4.1.8",
-    "happy-dom": "^20.9.0",
+    "@types/chrome": "^0.1.43",
+    "@types/node": "^25.9.4",
+    "@vitest/coverage-v8": "^4.1.9",
+    "happy-dom": "^20.10.6",
     "oxfmt": "^0.51.0",
-    "oxlint": "^1.68.0",
+    "oxlint": "^1.71.0",
     "sinon-chrome": "^3.0.1",
-    "svelte": "^5.56.1",
-    "svelte-check": "^4.5.0",
-    "tldts": "^7.4.2",
+    "svelte": "^5.56.4",
+    "svelte-check": "^4.7.1",
+    "tldts": "^7.4.5",
     "typescript": "^6.0.3",
-    "vite": "^8.0.16",
-    "vitest": "^4.1.8"
-  },
-  "pnpm": {
-    "overrides": {
-      "vite": "^8.0.14"
-    }
+    "vite": "^8.1.0",
+    "vitest": "^4.1.9"
   }
 }
