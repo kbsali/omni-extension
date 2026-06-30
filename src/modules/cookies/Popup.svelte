@@ -43,10 +43,19 @@
     }
   }
 
-  onMount(async () => {
+  async function resolveTabUrl(): Promise<string | null> {
+    // Opened as a detached window (Vivaldi shortcut fallback): the source site
+    // URL is passed via query string, since currentWindow is the popup itself.
+    const passed = new URLSearchParams(location.search).get('sourceUrl');
+    if (passed) return passed;
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    tabUrl = tab?.url ?? null;
-    domain = tab?.url ? extractETLD1(tab.url) : null;
+    return tab?.url ?? null;
+  }
+
+  onMount(async () => {
+    const url = await resolveTabUrl();
+    tabUrl = url;
+    domain = url ? extractETLD1(url) : null;
     if (domain) {
       await loadCookies();
     }

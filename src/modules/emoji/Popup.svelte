@@ -46,7 +46,7 @@
     try {
       const root = await chrome.storage.sync.get(STORAGE_KEY);
       const slice = (root[STORAGE_KEY] as { modules?: { emoji?: { recents?: string[] } } } | undefined)?.modules?.emoji;
-      recents = slice?.recents ?? [];
+      recents = Array.isArray(slice?.recents) ? slice.recents : [];
     } catch {
       recents = [];
     }
@@ -62,7 +62,8 @@
       const rootObj = (root ?? {}) as { modules?: Record<string, unknown> };
       const modulesObj = (rootObj.modules ?? {}) as Record<string, unknown>;
       const emojiSlice = (modulesObj.emoji ?? {}) as { recents?: string[] };
-      const nextRecents = pushRecent(emojiSlice.recents ?? [], char, RECENTS_MAX);
+      const prevRecents = Array.isArray(emojiSlice.recents) ? emojiSlice.recents : [];
+      const nextRecents = pushRecent(prevRecents, char, RECENTS_MAX);
 
       const next = {
         ...rootObj,
