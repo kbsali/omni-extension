@@ -850,8 +850,7 @@ Create `src/modules/dark/service.ts`:
 import type { OmniStorage } from '../../core/types';
 
 export type EnrolledSet =
-  | { mode: 'per-site'; domains: string[] }
-  | { mode: 'global'; excludeDomains: string[] };
+  { mode: 'per-site'; domains: string[] } | { mode: 'global'; excludeDomains: string[] };
 
 export function resolveMode(storage: OmniStorage, domain: string): 'dark' | 'light' {
   const site = storage.modules.dark.sites[domain];
@@ -1109,8 +1108,7 @@ export function updateBrightness(brightness: number): void {
 }
 
 type ContentMessage =
-  | { type: 'omni-dark/update-brightness'; brightness: number }
-  | { type: 'omni-dark/remove' };
+  { type: 'omni-dark/update-brightness'; brightness: number } | { type: 'omni-dark/remove' };
 
 // Wire up at module load (runs at document_start in the injected context).
 if (typeof chrome !== 'undefined' && chrome.runtime?.onMessage) {
