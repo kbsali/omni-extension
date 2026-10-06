@@ -23,10 +23,10 @@ importers:
         version: 1.63.0
       '@sveltejs/vite-plugin-svelte':
         specifier: ^7.3.1
-        version: 7.3.1(svelte@5.57.1)(vite@8.3.0(@types/node@26.6.2))
+        version: 7.3.1(svelte@5.57.2)(vite@8.3.0(@types/node@26.6.2))
       '@testing-library/svelte':
         specifier: ^5.4.2
-        version: 5.4.2(svelte@5.57.1)(vite@8.3.0(@types/node@26.6.2))(vitest@5.0.1)
+        version: 5.4.2(svelte@5.57.2)(vite@8.3.0(@types/node@26.6.2))(vitest@5.0.1)
       '@tsconfig/svelte':
         specifier: ^5.0.8
         version: 5.0.8
@@ -44,7 +44,7 @@ importers:
         version: 20.14.5
       oxfmt:
         specifier: ^0.70.0
-        version: 0.70.0(svelte@5.57.1)
+        version: 0.70.0(svelte@5.57.2)
       oxlint:
         specifier: ^1.85.0
         version: 1.85.0
@@ -53,10 +53,10 @@ importers:
         version: 3.0.1
       svelte:
         specifier: ^5.57.1
-        version: 5.57.1
+        version: 5.57.2
       svelte-check:
         specifier: ^4.7.6
-        version: 4.7.6(picomatch@4.0.7)(svelte@5.57.1)(typescript@6.0.3)
+        version: 4.7.6(picomatch@4.0.7)(svelte@5.57.2)(typescript@6.0.3)
       tldts:
         specifier: ^7.4.15
         version: 7.4.15
@@ -1042,8 +1042,8 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: ^5.0.0 || ^6.0.0
 
-  svelte@5.57.1:
-    resolution: {integrity: sha512-Uqj49lWKB+iSSnneuwiYYJ7MZgkB+eXr0LXBhv4uDuAkXqnWmq65Sxflfvp0Lc6MdKjMUxGaeOKWJqz5SNiVIA==}
+  svelte@5.57.2:
+    resolution: {integrity: sha512-1YiPCAXT0Ct6g1vOMmSLa0Nsc3QRMvtDF32ihgglGVrugIuIK38RyDiFNXVDhtQ81TJjSO57NdMw6DyYLqSGDQ==}
     engines: {node: '>=18'}
 
   tinybench@6.1.4:
@@ -1465,12 +1465,12 @@ snapshots:
 
   '@sveltejs/load-config@0.2.3': {}
 
-  '@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.57.1)(vite@8.3.0(@types/node@26.6.2))':
+  '@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.57.2)(vite@8.3.0(@types/node@26.6.2))':
     dependencies:
       deepmerge: 4.3.1
       magic-string: 1.4.2
       obug: 2.2.1
-      svelte: 5.57.1
+      svelte: 5.57.2
       vite: 8.3.0(@types/node@26.6.2)
       vitefu: 1.1.3(vite@8.3.0(@types/node@26.6.2))
 
@@ -1485,15 +1485,15 @@ snapshots:
       picocolors: 1.1.1
       pretty-format: 27.5.1
 
-  '@testing-library/svelte-core@1.1.3(svelte@5.57.1)':
+  '@testing-library/svelte-core@1.1.3(svelte@5.57.2)':
     dependencies:
-      svelte: 5.57.1
+      svelte: 5.57.2
 
-  '@testing-library/svelte@5.4.2(svelte@5.57.1)(vite@8.3.0(@types/node@26.6.2))(vitest@5.0.1)':
+  '@testing-library/svelte@5.4.2(svelte@5.57.2)(vite@8.3.0(@types/node@26.6.2))(vitest@5.0.1)':
     dependencies:
       '@testing-library/dom': 10.4.2
-      '@testing-library/svelte-core': 1.1.3(svelte@5.57.1)
-      svelte: 5.57.1
+      '@testing-library/svelte-core': 1.1.3(svelte@5.57.2)
+      svelte: 5.57.2
     optionalDependencies:
       vite: 8.3.0(@types/node@26.6.2)
       vitest: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.1)(happy-dom@20.14.5)(vite@8.3.0(@types/node@26.6.2))
@@ -1833,7 +1833,7 @@ snapshots:
 
   obug@2.2.1: {}
 
-  oxfmt@0.70.0(svelte@5.57.1):
+  oxfmt@0.70.0(svelte@5.57.2):
     dependencies:
       tinypool: 2.1.2
     optionalDependencies:
@@ -1856,7 +1856,7 @@ snapshots:
       '@oxfmt/binding-win32-arm64-msvc': 0.70.0
       '@oxfmt/binding-win32-ia32-msvc': 0.70.0
       '@oxfmt/binding-win32-x64-msvc': 0.70.0
-      svelte: 5.57.1
+      svelte: 5.57.2
 
   oxlint@1.85.0:
     optionalDependencies:
@@ -1973,7 +1973,7 @@ snapshots:
     dependencies:
       has-flag: 3.0.0
 
-  svelte-check@4.7.6(picomatch@4.0.7)(svelte@5.57.1)(typescript@6.0.3):
+  svelte-check@4.7.6(picomatch@4.0.7)(svelte@5.57.2)(typescript@6.0.3):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@sveltejs/load-config': 0.2.3
@@ -1981,12 +1981,12 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.7)
       picocolors: 1.1.1
       sade: 1.8.1
-      svelte: 5.57.1
+      svelte: 5.57.2
       typescript: 6.0.3
     transitivePeerDependencies:
       - picomatch
 
-  svelte@5.57.1:
+  svelte@5.57.2:
     dependencies:
       '@jridgewell/remapping': 2.3.5
       '@jridgewell/sourcemap-codec': 1.6.0
