@@ -12,8 +12,8 @@ importers:
   .:
     dependencies:
       emojibase-data:
-        specifier: ^17.0.0
-        version: 17.0.0(emojibase@17.0.0)
+        specifier: ^18.0.0
+        version: 18.0.0(emojibase@17.0.0)
     devDependencies:
       '@crxjs/vite-plugin':
         specifier: ^2.7.1
@@ -711,8 +711,8 @@ packages:
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
 
-  emojibase-data@17.0.0:
-    resolution: {integrity: sha512-Yvgb5AWoHViHV/gq1qr5ZAarcBip+B27/ZLRsUJkbgAEaLlZ/fof9g882LTpmEpyhBNEC0m2SEmItljHsTygjA==}
+  emojibase-data@18.0.0:
+    resolution: {integrity: sha512-TPPRRYv2zPd0jKI+pTpMquwWNZXYAsC3IVsCMeg2X8y8fEzKwOks4/5bz0YavF5r6d71aGPpb6oDnUEwSLLMoA==}
     peerDependencies:
       emojibase: '*'
 
@@ -1670,7 +1670,7 @@ snapshots:
       domelementtype: 2.3.0
       domhandler: 5.0.3
 
-  emojibase-data@17.0.0(emojibase@17.0.0):
+  emojibase-data@18.0.0(emojibase@17.0.0):
     dependencies:
       emojibase: 17.0.0
 
