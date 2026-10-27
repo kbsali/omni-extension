@@ -67,7 +67,7 @@ Chrome caps user-configurable shortcuts at 4 per extension. One slot is free for
 
 - Dark mode uses `filter: invert(1) hue-rotate(180deg)` — not a color-aware dark mode.
 - Dark mode per-site rules use eTLD+1 granularity.
-- No E2E tests yet.
+- E2E coverage is limited to dark mode (`tests/e2e/dark-mode.spec.ts`).
 - If `chrome.action.openPopup()` is unavailable (Chrome <127), the emoji and cookies keyboard shortcuts won't open the popup. Click the extension icon instead.
 
 ## Architecture

@@ -19,11 +19,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        // Dark content script is registered dynamically via
-        // chrome.scripting.registerContentScripts at runtime.
-        // CRXJS cannot statically discover it from the manifest, so we add it
-        // as an explicit Rollup input to ensure it is emitted to dist/ at a
-        // stable, hash-free path that matches the runtime registration.
+        // Dark content script was once registered at runtime via
+        // chrome.scripting.registerContentScripts, which needed a stable,
+        // hash-free path in dist/. Since a7d94de it is declared statically in
+        // manifest.config.ts; this explicit input predates that switch.
         'src/modules/dark/content': 'src/modules/dark/content.ts',
       },
       output: {
