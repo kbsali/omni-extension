@@ -32,7 +32,7 @@
     "@types/node": "^26.6.5",
     "@vitest/coverage-v8": "^5.0.5",
     "happy-dom": "^20.14.6",
-    "oxfmt": "^0.74.0",
+    "oxfmt": "^0.75.0",
     "oxlint": "^1.89.0",
     "sinon-chrome": "^3.0.1",
     "svelte": "^5.57.2",
