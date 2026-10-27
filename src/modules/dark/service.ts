@@ -1,8 +1,7 @@
 import type { Mode, OmniStorage } from '../../core/types';
 
 export type EnrolledSet =
-  | { mode: 'per-site'; domains: string[] }
-  | { mode: 'global'; excludeDomains: string[] };
+  { mode: 'per-site'; domains: string[] } | { mode: 'global'; excludeDomains: string[] };
 
 export function resolveMode(storage: OmniStorage, domain: string): 'dark' | 'light' {
   const site = storage.modules.dark.sites[domain];

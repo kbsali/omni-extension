@@ -5,8 +5,8 @@ Multi-tool browser extension (Manifest V3).
 ## Install (dev)
 
 ```bash
-pnpm install
-pnpm build
+bun install
+bun run build
 ```
 
 Then in Chrome:
@@ -18,7 +18,7 @@ Then in Chrome:
 ## Develop
 
 ```bash
-pnpm dev
+bun run dev
 ```
 
 HMR-enabled. Reload the extension in Chrome when `manifest.json` changes.
@@ -26,8 +26,8 @@ HMR-enabled. Reload the extension in Chrome when `manifest.json` changes.
 ## Test
 
 ```bash
-pnpm test
-pnpm test:coverage
+bun run test
+bun run test:coverage
 ```
 
 ## Features

@@ -1,0 +1,18 @@
+[fmt]
+printWidth = 100
+tabWidth = 2
+useTabs = false
+semi = true
+singleQuote = true
+trailingComma = "all"
+arrowParens = "always"
+endOfLine = "lf"
+sortPackageJson = true
+ignorePatterns = [
+  "**/*.svelte",
+  "docs/**",
+  "dist/**",
+  "coverage/**",
+  "test-results/**",
+  "playwright-report/**",
+]
