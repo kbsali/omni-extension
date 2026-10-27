@@ -9,6 +9,7 @@
 
 ## Commands
 
+- `bun install`: run first; `node_modules/` is not present in a fresh clone
 - `bun run build`: builds the MV3 extension into `dist/` (load unpacked in Chrome)
 - `bun run dev`: Vite + CRXJS HMR; reload the extension when the manifest changes
 - `bun run test`: Vitest (happy-dom). Not `bun test`, which starts Bun's own runner
@@ -20,7 +21,7 @@
 
 - Each feature is a module in `src/modules/<name>/`: `index.ts` (exports an `OmniModule`), `Popup.svelte`, `service.ts`, `storage.ts`, `README.md`
 - `src/core/registry.ts` lists the modules; the popup (`src/popup/`) and the background (`src/background/`) iterate over it
-- Aliases: `@core` maps to `src/core`, `@modules` maps to `src/modules`
+- Imports are relative. The `@core` and `@modules` aliases are defined (`tsconfig.json`, `vite.config.ts`) but unused; don't introduce them
 - Design specs and plans live in `docs/superpowers/specs/` and `docs/superpowers/plans/`; read them before changing a module
 
 ## Adding a module
