@@ -21,7 +21,7 @@
     "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {
-    "emojibase-data": "^17.0.0"
+    "emojibase-data": "^18.0.0"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.7.1",
