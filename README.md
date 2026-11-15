@@ -41,7 +41,7 @@ Per-site (eTLD+1) dark mode via CSS filter inversion.
 - Toggle current site: click `This site only`
 - Flip global default: click `All sites`
 - Adjust brightness 50% to 100%
-- Settings sync via `chrome.storage.sync`
+- Default mode and brightness sync via `chrome.storage.sync`; the per-site list stays on this device (`chrome.storage.local`)
 
 ### Cookies
 

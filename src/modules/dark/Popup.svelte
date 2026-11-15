@@ -30,7 +30,7 @@
       await writeStorage(storage);
       writeError = null;
     } catch (err) {
-      // Typically the 8 KB sync quota, see writeStorage.
+      // Typically a storage.sync quota (write rate or item size).
       writeError = `Not saved: ${err instanceof Error ? err.message : String(err)}`;
       storage = await readStorage();
     }
