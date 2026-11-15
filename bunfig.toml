@@ -10,6 +10,7 @@ endOfLine = "lf"
 sortPackageJson = true
 ignorePatterns = [
   "**/*.svelte",
+  ".dashboard/**",
   "docs/**",
   "dist/**",
   "coverage/**",

@@ -21,7 +21,6 @@ describe('core/registry', () => {
       expect(m.label).toBeTruthy();
       expect(m.icon).toBeTruthy();
       expect(m.Popup).toBeDefined();
-      expect(m.storageDefaults).toBeDefined();
     }
   });
 });

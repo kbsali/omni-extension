@@ -1,7 +1,7 @@
 import type { OmniModule, ShortcutCtx } from '../../core/types';
 import { extractETLD1 } from '../../core/domain';
 import Popup from './Popup.svelte';
-import { DARK_DEFAULTS, setSiteMode } from './storage';
+import { setSiteMode } from './storage';
 import { nextSiteValueOnToggle } from './service';
 
 async function toggleDarkForCurrentSite(ctx: ShortcutCtx): Promise<void> {
@@ -20,10 +20,6 @@ const dark: OmniModule = {
   label: 'Dark',
   icon: '🌙',
   Popup,
-  storageDefaults: { ...DARK_DEFAULTS },
-  onBackground() {
-    console.log('[omni/dark] background hook installed (no-op — content script self-manages)');
-  },
   shortcut: {
     commandName: 'toggle-dark',
     description: 'Toggle dark mode for current site',

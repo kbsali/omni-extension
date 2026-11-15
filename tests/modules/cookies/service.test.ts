@@ -80,20 +80,20 @@ describe('modules/cookies/service — toExportFilename', () => {
   });
 });
 
-describe('modules/cookies/service — toExportJson', () => {
-  const makeCookie = (name: string): chrome.cookies.Cookie => ({
-    name,
-    value: 'v-' + name,
-    domain: 'x.com',
-    path: '/',
-    secure: true,
-    httpOnly: false,
-    session: true,
-    sameSite: 'lax',
-    storeId: '0',
-    hostOnly: true,
-  });
+const makeCookie = (name: string): chrome.cookies.Cookie => ({
+  name,
+  value: 'v-' + name,
+  domain: 'x.com',
+  path: '/',
+  secure: true,
+  httpOnly: false,
+  session: true,
+  sameSite: 'lax',
+  storeId: '0',
+  hostOnly: true,
+});
 
+describe('modules/cookies/service — toExportJson', () => {
   it('returns pretty-printed JSON', () => {
     const out = toExportJson([makeCookie('a')]);
     expect(out).toContain('\n');

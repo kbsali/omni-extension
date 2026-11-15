@@ -19,11 +19,6 @@ export interface OmniStorage {
   };
 }
 
-export interface BackgroundCtx {
-  getStorage: () => Promise<OmniStorage>;
-  onStorageChange: (cb: (next: OmniStorage, prev: OmniStorage) => void) => void;
-}
-
 export interface ShortcutCtx {
   getStorage: () => Promise<OmniStorage>;
   writeStorage: (next: OmniStorage) => Promise<void>;
@@ -43,7 +38,5 @@ export interface OmniModule {
   label: string;
   icon: string;
   Popup: Component;
-  onBackground?: (ctx: BackgroundCtx) => void;
-  storageDefaults: Record<string, unknown>;
   shortcut?: OmniShortcut;
 }

@@ -42,9 +42,3 @@ export function setBrightness(storage: OmniStorage, value: number): OmniStorage 
     },
   };
 }
-
-export function cycleSiteMode(storage: OmniStorage, domain: string): OmniStorage {
-  const current = storage.modules.dark.sites[domain];
-  const next: Mode = current === undefined ? 'dark' : current === 'dark' ? 'light' : 'default';
-  return setSiteMode(storage, domain, next);
-}

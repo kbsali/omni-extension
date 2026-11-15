@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/svelte';
 import Popup from '../../../src/modules/dark/Popup.svelte';
 import { DEFAULT_STORAGE } from '../../../src/core/storage';
@@ -7,13 +7,13 @@ declare const chrome: any;
 
 describe('Dark Popup', () => {
   beforeEach(() => {
-    chrome.flush();
     chrome.storage.sync.get.callsFake(() => Promise.resolve({ omni: DEFAULT_STORAGE }));
     chrome.storage.sync.set.callsFake(() => Promise.resolve());
+    chrome.storage.local.get.callsFake(() => Promise.resolve({}));
+    chrome.storage.local.set.callsFake(() => Promise.resolve());
     chrome.tabs.query.callsFake(() =>
       Promise.resolve([{ id: 1, url: 'https://github.com/kevin/repo' }]),
     );
-    chrome.tabs.sendMessage.callsFake(() => Promise.resolve());
   });
 
   it('renders the moon icon and OFF state when site is not dark', async () => {
@@ -30,12 +30,15 @@ describe('Dark Popup', () => {
     expect(await findByText(/ON/i)).toBeTruthy();
   });
 
-  it('clicking the toggle calls chrome.storage.sync.set', async () => {
+  it('clicking the toggle saves the site to chrome.storage.local', async () => {
     const { findByRole, findByText } = render(Popup);
     // Wait for onMount to populate currentDomain (otherwise the toggle early-returns).
     await findByText(/Current site: github\.com/);
     const toggle = await findByRole('switch');
     await fireEvent.click(toggle);
-    expect(chrome.storage.sync.set.called).toBe(true);
+    await vi.waitFor(() => expect(chrome.storage.local.set.called).toBe(true));
+    expect(chrome.storage.local.set.lastCall.args[0]).toEqual({
+      'omni.darkSites': { 'github.com': 'dark' },
+    });
   });
 });

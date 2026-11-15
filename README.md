@@ -21,13 +21,15 @@ Then in Chrome:
 bun run dev
 ```
 
-HMR-enabled. Reload the extension in Chrome when `manifest.json` changes.
+HMR-enabled. Reload the extension in Chrome when `manifest.config.ts` changes.
 
 ## Test
 
 ```bash
+bun run check         # oxlint, bun fmt --check, svelte-check
 bun run test
 bun run test:coverage
+bun run build && bun run test:e2e   # headed Chromium, needs a display
 ```
 
 ## Features
@@ -36,10 +38,10 @@ bun run test:coverage
 
 Per-site (eTLD+1) dark mode via CSS filter inversion.
 
-- Toggle current site — click `This site only`
-- Flip global default — click `All sites`
-- Adjust brightness 50%–100%
-- Settings sync via `chrome.storage.sync`
+- Toggle current site: click `This site only`
+- Flip global default: click `All sites`
+- Adjust brightness 50% to 100%
+- Default mode and brightness sync via `chrome.storage.sync`; the per-site list stays on this device (`chrome.storage.local`)
 
 ### Cookies
 
@@ -61,14 +63,14 @@ Each module ships a keyboard shortcut. Chrome lets you remap them at `chrome://e
 
 Chrome caps user-configurable shortcuts at 4 per extension. One slot is free for a future module.
 
-**If a shortcut doesn't fire**, your OS or another extension is intercepting the keystroke (especially common on Linux desktop environments that bind `Alt+Shift+letter` to keyboard layout switching, IME, or window management). Open `chrome://extensions/shortcuts` and remap the conflicting entry to a free combination.
+**If a shortcut doesn't fire**, your OS, window manager or another extension is intercepting the keystroke. Open `chrome://extensions/shortcuts` and remap the conflicting entry to a free combination.
 
 ### Known limitations
 
-- Dark mode uses `filter: invert(1) hue-rotate(180deg)` — not a color-aware dark mode.
+- Dark mode uses `filter: invert(1) hue-rotate(180deg)`, not a color-aware dark mode.
 - Dark mode per-site rules use eTLD+1 granularity.
 - E2E coverage is limited to dark mode (`tests/e2e/dark-mode.spec.ts`).
-- If `chrome.action.openPopup()` is unavailable (Chrome <127), the emoji and cookies keyboard shortcuts won't open the popup. Click the extension icon instead.
+- Where `chrome.action.openPopup()` is unavailable or a no-op (Chrome <127, Vivaldi), the emoji and cookies shortcuts open the popup in a small detached window instead.
 
 ## Architecture
 
@@ -76,10 +78,7 @@ See [`docs/superpowers/specs/2026-04-21-omni-extension-design.md`](docs/superpow
 
 Adding a new module:
 
-1. Create `src/modules/<name>/` with `index.ts` exporting an `OmniModule`
-2. Import + register in `src/core/registry.ts`
-
-No shell code changes required.
+See "Adding a module" in [`AGENTS.md`](AGENTS.md): registry entry, storage type, and a manifest command if the module has a shortcut.
 
 ## License
 

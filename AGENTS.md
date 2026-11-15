@@ -14,14 +14,16 @@
 - `bun run dev`: Vite + CRXJS HMR; reload the extension when the manifest changes
 - `bun run test`: Vitest (happy-dom). Not `bun test`, which starts Bun's own runner
 - `bun run test:e2e`: Playwright against `dist/`; run `bun run build` first. Headed only (MV3 service workers do not boot headless)
-- `bun run check`: svelte-check; `bun run typecheck`, `bun run lint`, `bun run format:check`
+- `bun run check`: oxlint, `bun fmt --check`, then svelte-check (which also type-checks the `.ts` files). `bun run fix`: oxlint --fix, then `bun fmt`
 - Pre-commit (`.githooks/pre-commit`): `bun fmt --staged`, then `bunx oxlint`
 
 ## Architecture
 
 - Each feature is a module in `src/modules/<name>/`: `index.ts` (exports an `OmniModule`), `Popup.svelte`, `service.ts`, `storage.ts`, `README.md`
 - `src/core/registry.ts` lists the modules; the popup (`src/popup/`) and the background (`src/background/`) iterate over it
-- Imports are relative. The `@core` and `@modules` aliases are defined (`tsconfig.json`, `vite.config.ts`) but unused; don't introduce them
+- Imports are relative; there are no path aliases
+- State: `src/core/storage.ts`. Settings live in 1 `chrome.storage.sync` key, `omni` (8 KB cap); the growing dark `sites` map lives in `chrome.storage.local` under `omni.darkSites`. Always go through `readStorage`/`writeStorage`/`onStorageChange`, which split and join the 2 areas and fill defaults. Popups apply a change to a fresh `readStorage()`, never to a snapshot taken at mount
+- `src/modules/dark/content.ts` is the content-script entry (every page, `document_start`): side effects only, no `console` output; its testable helpers live in `css.ts` and `service.ts`
 - Design specs and plans live in `docs/superpowers/specs/` and `docs/superpowers/plans/`; read them before changing a module
 
 ## Adding a module
@@ -35,7 +37,8 @@
 ## Gotchas
 
 - The manifest `version` comes from `package.json`. A release bumps `package.json` only
-- `tests/setup.ts` stubs `chrome` with sinon-chrome: it covers `chrome.storage` and `chrome.runtime`, not `chrome.scripting`
+- `tests/setup.ts` stubs `chrome` with sinon-chrome and flushes it before each test: it has no `chrome.storage.session` (see `tests/core/session.test.ts` for a stub)
+- Permissions: `<all_urls>` host access already exposes `tab.url` and cookie access, so `tabs`, `activeTab` and `scripting` are not requested
 - `*.svelte` is ignored by `bun fmt` and oxlint; only `svelte-check` covers it
 - Coverage only counts `src/core/**` and the `service.ts`, `storage.ts` and `css.ts` files of each module
 - Pinned on purpose: `typescript` 6 (svelte-check breaks on 7) and `@crxjs/vite-plugin` 2.x (3.0 not adopted yet). Check again before bumping either

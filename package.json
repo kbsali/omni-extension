@@ -7,21 +7,18 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
-    "typecheck": "tsc --noEmit",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
-    "lint": "oxlint",
-    "lint:fix": "oxlint --fix",
-    "format": "bun fmt",
-    "format:check": "bun fmt --check",
-    "prepare": "git config core.hooksPath .githooks"
+    "check": "oxlint && bun fmt --check && svelte-check --tsconfig ./tsconfig.json",
+    "prepare": "git config core.hooksPath .githooks",
+    "fix": "oxlint --fix && bun fmt"
   },
   "dependencies": {
-    "emojibase-data": "^17.0.0"
+    "emojibase-data": "^17.0.0",
+    "tldts": "^7.4.19"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.7.1",
@@ -37,12 +34,8 @@
     "sinon-chrome": "^3.0.1",
     "svelte": "^5.57.2",
     "svelte-check": "^4.7.7",
-    "tldts": "^7.4.19",
     "typescript": "^6.0.3",
     "vite": "^8.3.4",
     "vitest": "^5.0.5"
-  },
-  "overrides": {
-    "vite": "^8.0.14"
   }
 }
