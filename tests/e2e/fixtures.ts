@@ -9,7 +9,9 @@ export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  context: async (_, use) => {
+  // Playwright parses the fixture signature and rejects anything but `{}` here.
+  // oxlint-disable-next-line no-empty-pattern
+  context: async ({}, use) => {
     const context = await chromium.launchPersistentContext('', {
       channel: 'chromium',
       headless: false, // MV3 service workers do not boot in standard headless
