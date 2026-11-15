@@ -3,7 +3,7 @@
   import { EMOJIS } from './data';
   import { fuzzyFilter, pushRecent, type EmojiEntry } from './service';
   import { RECENTS_MAX } from './storage';
-  import { STORAGE_KEY } from '../../core/storage';
+  import { readStorage, writeStorage } from '../../core/storage';
 
   const COLS = 8;
 
@@ -40,37 +40,22 @@
 
   onMount(async () => {
     try {
-      const root = await chrome.storage.sync.get(STORAGE_KEY);
-      const slice = (root[STORAGE_KEY] as { modules?: { emoji?: { recents?: string[] } } } | undefined)?.modules?.emoji;
-      recents = Array.isArray(slice?.recents) ? slice.recents : [];
-    } catch {
-      recents = [];
+      recents = (await readStorage()).modules.emoji?.recents ?? [];
+    } catch (err) {
+      console.error('[omni/emoji] reading recents failed:', err);
     }
     await tick();
     searchInput?.focus();
   });
 
   async function persistRecent(char: string): Promise<void> {
+    // Best-effort: the copy already succeeded, so log and still close.
     try {
-      const root = (await chrome.storage.sync.get(STORAGE_KEY))[STORAGE_KEY] as
-        | Record<string, unknown>
-        | undefined;
-      const rootObj = (root ?? {}) as { modules?: Record<string, unknown> };
-      const modulesObj = (rootObj.modules ?? {}) as Record<string, unknown>;
-      const emojiSlice = (modulesObj.emoji ?? {}) as { recents?: string[] };
-      const prevRecents = Array.isArray(emojiSlice.recents) ? emojiSlice.recents : [];
-      const nextRecents = pushRecent(prevRecents, char, RECENTS_MAX);
-
-      const next = {
-        ...rootObj,
-        modules: {
-          ...modulesObj,
-          emoji: { recents: nextRecents },
-        },
-      };
-      await chrome.storage.sync.set({ [STORAGE_KEY]: next });
-    } catch {
-      // best-effort: copy already succeeded
+      const storage = await readStorage();
+      const next = pushRecent(storage.modules.emoji?.recents ?? [], char, RECENTS_MAX);
+      await writeStorage({ ...storage, modules: { ...storage.modules, emoji: { recents: next } } });
+    } catch (err) {
+      console.error('[omni/emoji] saving recents failed:', err);
     }
   }
 
@@ -163,7 +148,7 @@
       {#if recentEntries.length > 0}
         <div class="section-label">Recent</div>
       {/if}
-      <div class="cells">
+      <div class="cells" style:--cols={COLS}>
         {#each visible as entry, index (entry.char + '@' + index)}
           {#if index === recentsEnd && recentEntries.length > 0}
             <div class="divider"></div>
@@ -249,7 +234,7 @@
   }
   .cells {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(var(--cols), 1fr);
     gap: 2px;
   }
   .divider {

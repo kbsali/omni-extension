@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import {
-  applyDarkFilter,
-  removeDarkFilter,
-  updateBrightness,
-} from '../../../src/modules/dark/content';
+import { applyDarkFilter, removeDarkFilter } from '../../../src/modules/dark/content';
 import { STYLE_ELEMENT_ID } from '../../../src/modules/dark/css';
 
 describe('dark/content DOM helpers', () => {
@@ -36,12 +32,5 @@ describe('dark/content DOM helpers', () => {
     removeDarkFilter();
     expect(document.getElementById(STYLE_ELEMENT_ID)).toBeNull();
     expect(document.documentElement.style.getPropertyValue('--omni-brightness')).toBe('');
-  });
-
-  it('updateBrightness changes the custom property without re-injecting style', () => {
-    applyDarkFilter(1.0);
-    updateBrightness(0.75);
-    expect(document.documentElement.style.getPropertyValue('--omni-brightness')).toBe('0.75');
-    expect(document.querySelectorAll(`#${STYLE_ELEMENT_ID}`).length).toBe(1);
   });
 });

@@ -20,26 +20,40 @@
     currentDomain ? resolveMode(storage, currentDomain) : storage.modules.dark.defaultMode,
   );
 
-  async function update(next: OmniStorage) {
-    console.log('[omni/dark/popup] writing storage', next.modules.dark);
-    storage = next;
-    await writeStorage(next);
+  // Apply the change to a fresh read, not to the snapshot: a click before onMount
+  // resolves would otherwise write DEFAULT_STORAGE over the user's settings, and a
+  // shortcut toggle or another synced device would be reverted.
+  async function update(change: (s: OmniStorage) => OmniStorage) {
+    storage = change(await readStorage());
+    await writeStorage(storage);
   }
 
   function onToggleSite() {
-    if (!currentDomain) return;
-    const current = storage.modules.dark.sites[currentDomain] ?? 'default';
-    const siteValue = nextSiteValueOnToggle(current, storage.modules.dark.defaultMode);
-    update(setSiteMode(storage, currentDomain, siteValue));
+    const domain = currentDomain;
+    if (!domain) return;
+    void update((s) => {
+      const current = s.modules.dark.sites[domain] ?? 'default';
+      return setSiteMode(s, domain, nextSiteValueOnToggle(current, s.modules.dark.defaultMode));
+    });
   }
 
   function onToggleGlobal() {
-    update(setDefaultMode(storage, storage.modules.dark.defaultMode === 'dark' ? 'light' : 'dark'));
+    void update((s) => setDefaultMode(s, s.modules.dark.defaultMode === 'dark' ? 'light' : 'dark'));
   }
 
-  function onBrightness(e: Event) {
-    const value = Number((e.target as HTMLInputElement).value) / 100;
-    update(setBrightness(storage, value));
+  // Update the label on input, persist on release: storage.sync allows 120 writes
+  // a minute, and every input step of a drag would be one.
+  function brightnessFrom(e: Event): number {
+    return Number((e.target as HTMLInputElement).value) / 100;
+  }
+
+  function onBrightnessInput(e: Event) {
+    storage = setBrightness(storage, brightnessFrom(e));
+  }
+
+  function onBrightnessChange(e: Event) {
+    const value = brightnessFrom(e);
+    void update((s) => setBrightness(s, value));
   }
 </script>
 
@@ -72,7 +86,8 @@
       min="50"
       max="100"
       value={Math.round(storage.modules.dark.brightness * 100)}
-      oninput={onBrightness}
+      oninput={onBrightnessInput}
+      onchange={onBrightnessChange}
     />
     <span>{Math.round(storage.modules.dark.brightness * 100)}%</span>
   </label>

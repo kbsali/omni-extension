@@ -5,8 +5,9 @@ export default defineManifest({
   manifest_version: 3,
   name: 'Omni Extension',
   version: pkg.version,
-  description: 'Multi-tool browser extension (Dark Mode + future modules)',
-  permissions: ['storage', 'scripting', 'activeTab', 'tabs', 'cookies'],
+  description: 'Dark mode, cookie editor and emoji picker',
+  // The <all_urls> host permission already exposes tab.url: no 'tabs' or 'activeTab'.
+  permissions: ['storage', 'cookies'],
   host_permissions: ['<all_urls>'],
   content_scripts: [
     {
@@ -25,15 +26,15 @@ export default defineManifest({
   },
   commands: {
     'open-emoji': {
-      suggested_key: { default: 'Ctrl+Shift+L', mac: 'Ctrl+Shift+L' },
+      suggested_key: { default: 'Ctrl+Shift+L' },
       description: 'Open emoji picker',
     },
     'open-cookies': {
-      suggested_key: { default: 'Ctrl+Shift+Comma', mac: 'Ctrl+Shift+Comma' },
+      suggested_key: { default: 'Ctrl+Shift+Comma' },
       description: 'Open cookies editor',
     },
     'toggle-dark': {
-      suggested_key: { default: 'Ctrl+Shift+Period', mac: 'Ctrl+Shift+Period' },
+      suggested_key: { default: 'Ctrl+Shift+Period' },
       description: 'Toggle dark mode for current site',
     },
   },

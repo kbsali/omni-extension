@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   readStorage,
   writeStorage,
@@ -9,10 +9,6 @@ import {
 declare const chrome: any;
 
 describe('core/storage', () => {
-  beforeEach(() => {
-    chrome.flush();
-  });
-
   describe('readStorage', () => {
     it('returns DEFAULT_STORAGE when nothing stored', async () => {
       chrome.storage.sync.get.callsFake(() => Promise.resolve({}));
@@ -43,21 +39,32 @@ describe('core/storage', () => {
   });
 
   describe('onStorageChange', () => {
-    it('invokes callback with parsed new/old storage on change', () => {
+    it('invokes callback with the new storage on change', () => {
       const cb = vi.fn();
       onStorageChange(cb);
 
       expect(chrome.storage.onChanged.addListener.calledOnce).toBe(true);
       const listener = chrome.storage.onChanged.addListener.firstCall.args[0];
 
-      const newValue = { ...DEFAULT_STORAGE };
-      const oldValue = {
+      const newValue = {
         ...DEFAULT_STORAGE,
-        modules: { dark: { ...DEFAULT_STORAGE.modules.dark, brightness: 0.8 } },
+        modules: {
+          ...DEFAULT_STORAGE.modules,
+          dark: { ...DEFAULT_STORAGE.modules.dark, brightness: 0.8 },
+        },
       };
-      listener({ omni: { newValue, oldValue } }, 'sync');
+      listener({ omni: { newValue, oldValue: DEFAULT_STORAGE } }, 'sync');
 
-      expect(cb).toHaveBeenCalledWith(newValue, oldValue);
+      expect(cb).toHaveBeenCalledWith(newValue);
+    });
+
+    it('falls back to DEFAULT_STORAGE when the key is cleared', () => {
+      const cb = vi.fn();
+      onStorageChange(cb);
+      const listener = chrome.storage.onChanged.addListener.firstCall.args[0];
+
+      listener({ omni: { oldValue: DEFAULT_STORAGE } }, 'sync');
+      expect(cb).toHaveBeenCalledWith(DEFAULT_STORAGE);
     });
 
     it('ignores unrelated storage keys', () => {

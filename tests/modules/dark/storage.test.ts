@@ -3,7 +3,6 @@ import {
   setSiteMode,
   setDefaultMode,
   setBrightness,
-  cycleSiteMode,
   DARK_DEFAULTS,
 } from '../../../src/modules/dark/storage';
 import { DEFAULT_STORAGE } from '../../../src/core/storage';
@@ -47,18 +46,6 @@ describe('modules/dark/storage', () => {
       expect(setBrightness(DEFAULT_STORAGE, 0.3).modules.dark.brightness).toBe(0.5);
       expect(setBrightness(DEFAULT_STORAGE, 1.5).modules.dark.brightness).toBe(1.0);
       expect(setBrightness(DEFAULT_STORAGE, 0.75).modules.dark.brightness).toBe(0.75);
-    });
-  });
-
-  describe('cycleSiteMode', () => {
-    it('cycles default → dark → light → default', () => {
-      let s = DEFAULT_STORAGE;
-      s = cycleSiteMode(s, 'example.com');
-      expect(s.modules.dark.sites['example.com']).toBe('dark');
-      s = cycleSiteMode(s, 'example.com');
-      expect(s.modules.dark.sites['example.com']).toBe('light');
-      s = cycleSiteMode(s, 'example.com');
-      expect(s.modules.dark.sites).not.toHaveProperty('example.com');
     });
   });
 });

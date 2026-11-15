@@ -1,10 +1,10 @@
 import { buildDarkCss, STYLE_ELEMENT_ID } from './css';
 import { extractETLD1 } from '../../core/domain';
 import { resolveMode } from './service';
-import { DEFAULT_STORAGE } from '../../core/storage';
+import { DEFAULT_STORAGE, STORAGE_KEY, onStorageChange } from '../../core/storage';
 import type { OmniStorage } from '../../core/types';
 
-console.log('[omni/dark/content] script loaded on', location.href);
+// Runs on every page: no console output here, it would land in the site's console.
 
 export function applyDarkFilter(brightness: number): void {
   document.documentElement.style.setProperty('--omni-brightness', String(brightness));
@@ -13,16 +13,11 @@ export function applyDarkFilter(brightness: number): void {
   style.id = STYLE_ELEMENT_ID;
   style.textContent = buildDarkCss();
   (document.head ?? document.documentElement).appendChild(style);
-  console.log('[omni/dark/content] applying filter', brightness);
 }
 
 export function removeDarkFilter(): void {
   document.getElementById(STYLE_ELEMENT_ID)?.remove();
   document.documentElement.style.removeProperty('--omni-brightness');
-}
-
-export function updateBrightness(brightness: number): void {
-  document.documentElement.style.setProperty('--omni-brightness', String(brightness));
 }
 
 function reconcileFromStorage(storage: OmniStorage): void {
@@ -36,23 +31,14 @@ function reconcileFromStorage(storage: OmniStorage): void {
   }
 }
 
-// Side-effect setup — runs at document_start in real Chrome.
+// Side-effect setup, runs at document_start in real Chrome. The thenable check
+// skips it under sinon-chrome, whose stubbed get() returns undefined.
 if (typeof chrome !== 'undefined' && chrome.storage?.sync) {
-  const initial = chrome.storage.sync.get('omni') as unknown;
+  const initial = chrome.storage.sync.get(STORAGE_KEY) as unknown;
   if (initial && typeof (initial as Promise<unknown>).then === 'function') {
-    (initial as Promise<{ omni?: OmniStorage }>).then((result) => {
-      const storage = result.omni ?? DEFAULT_STORAGE;
-      reconcileFromStorage(storage);
+    void (initial as Promise<Record<string, OmniStorage | undefined>>).then((result) => {
+      reconcileFromStorage(result[STORAGE_KEY] ?? DEFAULT_STORAGE);
     });
   }
-
-  if (chrome.storage?.onChanged) {
-    chrome.storage.onChanged.addListener((changes, areaName) => {
-      if (areaName !== 'sync') return;
-      const change = changes['omni'];
-      if (!change) return;
-      const next = (change.newValue as OmniStorage | undefined) ?? DEFAULT_STORAGE;
-      reconcileFromStorage(next);
-    });
-  }
+  onStorageChange(reconcileFromStorage);
 }

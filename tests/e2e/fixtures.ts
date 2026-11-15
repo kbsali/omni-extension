@@ -1,9 +1,7 @@
 import { test as base, chromium, type BrowserContext } from '@playwright/test';
-import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const pathToExtension = path.resolve(__dirname, '../../dist');
+const pathToExtension = fileURLToPath(new URL('../../dist', import.meta.url));
 
 export const test = base.extend<{
   context: BrowserContext;

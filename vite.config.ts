@@ -1,21 +1,11 @@
-import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { svelteTesting } from '@testing-library/svelte/vite';
 import { crx } from '@crxjs/vite-plugin';
 import manifest from './manifest.config.ts';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 export default defineConfig({
   plugins: [svelte(), svelteTesting(), crx({ manifest })],
-  resolve: {
-    alias: {
-      '@core': resolve(__dirname, 'src/core'),
-      '@modules': resolve(__dirname, 'src/modules'),
-    },
-  },
   test: {
     globals: true,
     environment: 'happy-dom',

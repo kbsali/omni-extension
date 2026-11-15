@@ -18,7 +18,6 @@ function makeModule(id: string, shortcut: OmniShortcut | undefined): OmniModule 
     icon: '?',
     // @ts-expect-error — Component type not needed for dispatcher tests
     Popup: null,
-    storageDefaults: {},
     shortcut,
   };
 }
