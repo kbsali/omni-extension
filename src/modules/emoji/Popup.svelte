@@ -14,10 +14,8 @@
   let selected = $state(0);
   let copyError: string | null = $state(null);
 
-  // Built once; emoji dataset is static.
   const byChar = new Map<string, EmojiEntry>(EMOJIS.map((e) => [e.char, e]));
 
-  // Look up EmojiEntry for each recent char; skip any that vanished from the dataset.
   const recentEntries: EmojiEntry[] = $derived.by(() => {
     if (query.trim() !== '') return [];
     return recents.flatMap((char) => {
@@ -30,12 +28,10 @@
     query.trim() === '' ? [...EMOJIS] : fuzzyFilter(query, EMOJIS),
   );
 
-  // Flattened list the user navigates. Recents come first when not searching.
   const visible: EmojiEntry[] = $derived([...recentEntries, ...mainList]);
 
   const recentsEnd = $derived(recentEntries.length);
 
-  // Reset selection to 0 whenever the query changes.
   // `visible` never shrinks outside of a query change, so a bounds clamp is not needed.
   $effect(() => {
     query;

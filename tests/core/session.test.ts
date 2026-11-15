@@ -1,17 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { setPendingTab, consumePendingTab } from '../../src/core/session';
 
-// sinon-chrome doesn't ship chrome.storage.session. The project's `tests/setup.ts`
-// provides `chrome.storage.sync` only. We stub storage.session inline here.
+// sinon-chrome has no chrome.storage.session, and @types/chrome marks it
+// read-only: install a stub through a mutable cast.
 const sessionStore = new Map<string, unknown>();
 
 beforeEach(() => {
   sessionStore.clear();
-  // Minimal stub of the three methods `session.ts` uses; cast away the
-  // overloaded StorageArea signature since sinon-chrome doesn't ship
-  // chrome.storage.session and we only need our helpers' happy path.
-  // `chrome.storage.session` is a read-only property in @types/chrome, so assign
-  // through a mutable cast of the storage object to install the stub.
   (chrome.storage as { session: typeof chrome.storage.session }).session = {
     get: async (key: string) => (sessionStore.has(key) ? { [key]: sessionStore.get(key) } : {}),
     set: async (obj: Record<string, unknown>) => {

@@ -36,7 +36,6 @@ describe('Dark Popup', () => {
     await findByText(/Current site: github\.com/);
     const toggle = await findByRole('switch');
     await fireEvent.click(toggle);
-    // sinon-chrome records .set calls
     expect(chrome.storage.sync.set.called).toBe(true);
   });
 });

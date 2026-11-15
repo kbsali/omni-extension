@@ -38,7 +38,6 @@ function reconcileFromStorage(storage: OmniStorage): void {
 
 // Side-effect setup — runs at document_start in real Chrome.
 if (typeof chrome !== 'undefined' && chrome.storage?.sync) {
-  // Initial application from current storage.
   const initial = chrome.storage.sync.get('omni') as unknown;
   if (initial && typeof (initial as Promise<unknown>).then === 'function') {
     (initial as Promise<{ omni?: OmniStorage }>).then((result) => {
@@ -47,7 +46,6 @@ if (typeof chrome !== 'undefined' && chrome.storage?.sync) {
     });
   }
 
-  // React to storage changes (popup toggle, brightness slider, default flip).
   if (chrome.storage?.onChanged) {
     chrome.storage.onChanged.addListener((changes, areaName) => {
       if (areaName !== 'sync') return;

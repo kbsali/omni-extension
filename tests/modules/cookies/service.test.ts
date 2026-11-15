@@ -45,7 +45,6 @@ describe('modules/cookies/service — parseExpires', () => {
   });
 
   it('returns unix seconds for a valid datetime-local string', () => {
-    // 2030-01-15T12:00 local → Date(2030, 0, 15, 12, 0).getTime()/1000
     const expected = Math.floor(new Date(2030, 0, 15, 12, 0).getTime() / 1000);
     expect(parseExpires('2030-01-15T12:00')).toBe(expected);
   });
@@ -71,12 +70,12 @@ describe('modules/cookies/service — formatExpiresInput', () => {
 
 describe('modules/cookies/service — toExportFilename', () => {
   it('formats as cookies-<domain>-<YYYY-MM-DD>.json', () => {
-    const date = new Date(2026, 3, 22, 9, 30); // 22 April 2026 local
+    const date = new Date(2026, 3, 22, 9, 30);
     expect(toExportFilename('x.com', date)).toBe('cookies-x.com-2026-04-22.json');
   });
 
   it('zero-pads month and day', () => {
-    const date = new Date(2026, 0, 5); // 5 January 2026
+    const date = new Date(2026, 0, 5);
     expect(toExportFilename('example.org', date)).toBe('cookies-example.org-2026-01-05.json');
   });
 });
