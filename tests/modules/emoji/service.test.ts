@@ -67,7 +67,6 @@ describe('modules/emoji/service — fuzzyFilter', () => {
   });
 
   it('falls back to subsequence match on name', () => {
-    // "gnf" is a subsequence of "grinning face"
     const result = fuzzyFilter('gnf', ALL);
     expect(result).toContain(grinning);
   });
@@ -77,8 +76,6 @@ describe('modules/emoji/service — fuzzyFilter', () => {
   });
 
   it('breaks ties by original array index (stable)', () => {
-    // Three entries all contain "face" in name. Expected order: grinning, grin, cat
-    // preserving original array order.
     const result = fuzzyFilter('face', ALL);
     expect(result).toEqual([grinning, grin, cat]);
   });

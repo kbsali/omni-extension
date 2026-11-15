@@ -35,7 +35,6 @@ function isSubsequence(haystack: string, needle: string): boolean {
 function scoreEntry(entry: EmojiEntry, query: string): number {
   let best = 0;
 
-  // Exact / startsWith / includes on the name.
   const nameScore = scoreString(entry.name, query, 1000, 500, 100);
   if (nameScore > best) best = nameScore;
 
@@ -47,13 +46,11 @@ function scoreEntry(entry: EmojiEntry, query: string): number {
     }
   }
 
-  // Keyword matches.
   for (const keyword of entry.keywords) {
     const kwScore = scoreString(keyword, query, 250, 150, 50);
     if (kwScore > best) best = kwScore;
   }
 
-  // Subsequence fallback on name, only if nothing matched yet.
   if (best === 0 && isSubsequence(entry.name, query)) {
     best = 10;
   }
@@ -77,7 +74,6 @@ export function fuzzyFilter(query: string, entries: readonly EmojiEntry[]): Emoj
     if (score > 0) scored.push({ entry, score, index });
   });
 
-  // Sort by score desc, ties broken by original index (stable).
   scored.sort((a, b) => b.score - a.score || a.index - b.index);
   return scored.map((s) => s.entry);
 }

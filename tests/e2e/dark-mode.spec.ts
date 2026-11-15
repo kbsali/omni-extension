@@ -4,7 +4,6 @@ test('toggling dark mode injects style element on the active site', async ({
   context,
   extensionId,
 }) => {
-  // Capture all console messages from all pages and the service worker.
   const logs: string[] = [];
   context.on('console', (msg) => logs.push(`[page:${msg.type()}] ${msg.text()}`));
   for (const sw of context.serviceWorkers()) {
@@ -21,11 +20,9 @@ test('toggling dark mode injects style element on the active site', async ({
   };
 
   try {
-    // Open the target page first so the extension can act on it.
     const target = await context.newPage();
     await target.goto('https://example.com');
 
-    // Open the extension popup (about:blank target so we don't navigate the test page).
     const popup = await context.newPage();
     await popup.goto(`chrome-extension://${extensionId}/src/popup/index.html`);
 
@@ -57,16 +54,13 @@ test('toggling dark mode injects style element on the active site', async ({
       await chrome.storage.sync.set({ omni: next });
     });
 
-    // Give the background SW a moment to reconcile + register content script.
     await target.waitForTimeout(1500);
 
-    // Reload the target page so the (newly registered) content script can inject.
     await target.bringToFront();
     await target.reload();
     await target.waitForLoadState('domcontentloaded');
     await target.waitForTimeout(1000); // allow async content-script chrome.storage.sync.get to resolve
 
-    // Assert: the dark style element exists.
     const styleExists = await target.locator('style#omni-dark-style').count();
 
     dumpLogs('end of test');
