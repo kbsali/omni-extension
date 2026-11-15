@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { modules } from '../../src/core/registry';
+import { describe, expect, it } from 'vitest';
+
 import manifest from '../../manifest.config';
+import { modules } from '../../src/core/registry';
 
 describe('core/registry', () => {
   it('exports the dark, cookies, and emoji modules', () => {
@@ -32,7 +33,8 @@ interface ManifestCommand {
 
 describe('core/registry — shortcut / manifest parity', () => {
   const manifestCommands =
-    (manifest as unknown as { commands?: Record<string, ManifestCommand> }).commands ?? {};
+    (manifest as unknown as { commands?: Record<string, ManifestCommand> })
+      .commands ?? {};
 
   const modulesWithShortcut = modules.filter((m) => m.shortcut !== undefined);
 
@@ -45,7 +47,10 @@ describe('core/registry — shortcut / manifest parity', () => {
     for (const m of modulesWithShortcut) {
       const sc = m.shortcut!;
       const cmd = manifestCommands[sc.commandName];
-      expect(cmd, `manifest.commands missing entry for ${sc.commandName}`).toBeDefined();
+      expect(
+        cmd,
+        `manifest.commands missing entry for ${sc.commandName}`
+      ).toBeDefined();
       expect(cmd!.suggested_key?.default).toBe(sc.suggestedKey);
       expect(cmd!.description).toBe(sc.description);
     }
@@ -53,10 +58,13 @@ describe('core/registry — shortcut / manifest parity', () => {
 
   it('every manifest command is owned by exactly one module', () => {
     for (const commandName of Object.keys(manifestCommands)) {
-      const owners = modulesWithShortcut.filter((m) => m.shortcut!.commandName === commandName);
-      expect(owners.length, `orphan or duplicate owner for manifest command ${commandName}`).toBe(
-        1,
+      const owners = modulesWithShortcut.filter(
+        (m) => m.shortcut!.commandName === commandName
       );
+      expect(
+        owners.length,
+        `orphan or duplicate owner for manifest command ${commandName}`
+      ).toBe(1);
     }
   });
 });

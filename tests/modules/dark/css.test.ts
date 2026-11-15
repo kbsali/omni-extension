@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+
 import {
   applyDarkFilter,
   buildDarkCss,
@@ -11,7 +12,7 @@ describe('buildDarkCss', () => {
     const css = buildDarkCss();
     expect(css).toContain('html');
     expect(css).toContain(
-      'filter: invert(1) hue-rotate(180deg) brightness(var(--omni-brightness, 1))',
+      'filter: invert(1) hue-rotate(180deg) brightness(var(--omni-brightness, 1))'
     );
   });
 
@@ -50,7 +51,9 @@ describe('dark/css DOM helpers', () => {
 
   it('applyDarkFilter sets --omni-brightness custom property', () => {
     applyDarkFilter(0.9);
-    expect(document.documentElement.style.getPropertyValue('--omni-brightness')).toBe('0.9');
+    expect(
+      document.documentElement.style.getPropertyValue('--omni-brightness')
+    ).toBe('0.9');
   });
 
   it('applyDarkFilter is idempotent (no duplicate style elements)', () => {
@@ -63,6 +66,8 @@ describe('dark/css DOM helpers', () => {
     applyDarkFilter(1.0);
     removeDarkFilter();
     expect(document.getElementById(STYLE_ELEMENT_ID)).toBeNull();
-    expect(document.documentElement.style.getPropertyValue('--omni-brightness')).toBe('');
+    expect(
+      document.documentElement.style.getPropertyValue('--omni-brightness')
+    ).toBe('');
   });
 });

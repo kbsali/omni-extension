@@ -1,33 +1,42 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
 import {
   buildCookieUrl,
-  parseExpires,
   formatExpiresInput,
+  parseExpires,
   toExportFilename,
   toExportJson,
 } from '../../../src/modules/cookies/service';
 
 describe('modules/cookies/service — buildCookieUrl', () => {
   it('uses https when secure=true', () => {
-    expect(buildCookieUrl({ domain: 'x.com', path: '/', secure: true })).toBe('https://x.com/');
+    expect(buildCookieUrl({ domain: 'x.com', path: '/', secure: true })).toBe(
+      'https://x.com/'
+    );
   });
 
   it('uses http when secure=false', () => {
-    expect(buildCookieUrl({ domain: 'x.com', path: '/', secure: false })).toBe('http://x.com/');
+    expect(buildCookieUrl({ domain: 'x.com', path: '/', secure: false })).toBe(
+      'http://x.com/'
+    );
   });
 
   it('strips a leading dot from the domain', () => {
-    expect(buildCookieUrl({ domain: '.x.com', path: '/', secure: true })).toBe('https://x.com/');
+    expect(buildCookieUrl({ domain: '.x.com', path: '/', secure: true })).toBe(
+      'https://x.com/'
+    );
   });
 
   it('defaults path to "/" when empty', () => {
-    expect(buildCookieUrl({ domain: 'x.com', path: '', secure: true })).toBe('https://x.com/');
+    expect(buildCookieUrl({ domain: 'x.com', path: '', secure: true })).toBe(
+      'https://x.com/'
+    );
   });
 
   it('preserves non-root paths', () => {
-    expect(buildCookieUrl({ domain: 'x.com', path: '/api', secure: true })).toBe(
-      'https://x.com/api',
-    );
+    expect(
+      buildCookieUrl({ domain: 'x.com', path: '/api', secure: true })
+    ).toBe('https://x.com/api');
   });
 });
 
@@ -71,12 +80,16 @@ describe('modules/cookies/service — formatExpiresInput', () => {
 describe('modules/cookies/service — toExportFilename', () => {
   it('formats as cookies-<domain>-<YYYY-MM-DD>.json', () => {
     const date = new Date(2026, 3, 22, 9, 30);
-    expect(toExportFilename('x.com', date)).toBe('cookies-x.com-2026-04-22.json');
+    expect(toExportFilename('x.com', date)).toBe(
+      'cookies-x.com-2026-04-22.json'
+    );
   });
 
   it('zero-pads month and day', () => {
     const date = new Date(2026, 0, 5);
-    expect(toExportFilename('example.org', date)).toBe('cookies-example.org-2026-01-05.json');
+    expect(toExportFilename('example.org', date)).toBe(
+      'cookies-example.org-2026-01-05.json'
+    );
   });
 });
 
@@ -102,7 +115,11 @@ describe('modules/cookies/service — toExportJson', () => {
   });
 
   it('sorts cookies alphabetically by name', () => {
-    const cookies = [makeCookie('zeta'), makeCookie('alpha'), makeCookie('mid')];
+    const cookies = [
+      makeCookie('zeta'),
+      makeCookie('alpha'),
+      makeCookie('mid'),
+    ];
     const parsed = JSON.parse(toExportJson(cookies)) as chrome.cookies.Cookie[];
     expect(parsed.map((c) => c.name)).toEqual(['alpha', 'mid', 'zeta']);
   });

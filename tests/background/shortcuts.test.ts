@@ -1,6 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
 import { buildDispatcher } from '../../src/background/shortcuts';
-import type { OmniModule, OmniShortcut, ShortcutCtx } from '../../src/core/types';
+import type {
+  OmniModule,
+  OmniShortcut,
+  ShortcutCtx,
+} from '../../src/core/types';
 
 function makeCtx(): ShortcutCtx {
   return {
@@ -11,7 +16,10 @@ function makeCtx(): ShortcutCtx {
   } as unknown as ShortcutCtx;
 }
 
-function makeModule(id: string, shortcut: OmniShortcut | undefined): OmniModule {
+function makeModule(
+  id: string,
+  shortcut: OmniShortcut | undefined
+): OmniModule {
   return {
     id,
     label: id,
@@ -75,7 +83,9 @@ describe('background/shortcuts — buildDispatcher', () => {
   });
 
   it('catches errors thrown by onInvoke and logs them', async () => {
-    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const error = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
     const log = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     const failing = vi.fn().mockRejectedValue(new Error('boom'));
     const modules = [

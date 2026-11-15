@@ -1,11 +1,12 @@
-import { describe, it, expect } from 'vitest';
-import {
-  setSiteMode,
-  setDefaultMode,
-  setBrightness,
-  DARK_DEFAULTS,
-} from '../../../src/modules/dark/storage';
+import { describe, expect, it } from 'vitest';
+
 import { DEFAULT_STORAGE } from '../../../src/core/storage';
+import {
+  DARK_DEFAULTS,
+  setBrightness,
+  setDefaultMode,
+  setSiteMode,
+} from '../../../src/modules/dark/storage';
 
 describe('modules/dark/storage', () => {
   describe('DARK_DEFAULTS', () => {
@@ -43,9 +44,15 @@ describe('modules/dark/storage', () => {
 
   describe('setBrightness', () => {
     it('clamps to [0.5, 1.0]', () => {
-      expect(setBrightness(DEFAULT_STORAGE, 0.3).modules.dark.brightness).toBe(0.5);
-      expect(setBrightness(DEFAULT_STORAGE, 1.5).modules.dark.brightness).toBe(1.0);
-      expect(setBrightness(DEFAULT_STORAGE, 0.75).modules.dark.brightness).toBe(0.75);
+      expect(setBrightness(DEFAULT_STORAGE, 0.3).modules.dark.brightness).toBe(
+        0.5
+      );
+      expect(setBrightness(DEFAULT_STORAGE, 1.5).modules.dark.brightness).toBe(
+        1.0
+      );
+      expect(setBrightness(DEFAULT_STORAGE, 0.75).modules.dark.brightness).toBe(
+        0.75
+      );
     });
   });
 });

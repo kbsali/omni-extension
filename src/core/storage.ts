@@ -1,7 +1,7 @@
-import type { DarkStorage, OmniStorage } from './types';
 import { COOKIES_DEFAULTS } from '../modules/cookies/storage';
 import { DARK_DEFAULTS } from '../modules/dark/storage';
 import { EMOJI_DEFAULTS } from '../modules/emoji/storage';
+import type { DarkStorage, OmniStorage } from './types';
 
 export const STORAGE_KEY = 'omni';
 // The dark per-site map grows with use: it lives in storage.local (10 MB) on

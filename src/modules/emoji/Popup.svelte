@@ -32,11 +32,12 @@
 
   const recentsEnd = $derived(recentEntries.length);
 
-  // `visible` never shrinks outside of a query change, so a bounds clamp is not needed.
-  $effect(() => {
-    query;
+  // Every query change goes through here and resets the selection; `visible`
+  // never shrinks otherwise, so no bounds clamp is needed.
+  function setQuery(next: string): void {
+    query = next;
     selected = 0;
-  });
+  }
 
   onMount(async () => {
     try {
@@ -87,7 +88,7 @@
     if (e.key === 'Escape') {
       e.preventDefault();
       if (query.length > 0) {
-        query = '';
+        setQuery('');
       } else {
         window.close();
       }
@@ -121,7 +122,7 @@
   }
 
   function clearQuery(): void {
-    query = '';
+    setQuery('');
     searchInput?.focus();
   }
 </script>
@@ -130,7 +131,8 @@
   <div class="search">
     <input
       bind:this={searchInput}
-      bind:value={query}
+      value={query}
+      oninput={(e) => setQuery((e.target as HTMLInputElement).value)}
       onkeydown={onKeydown}
       placeholder="Search emoji…"
       type="text"

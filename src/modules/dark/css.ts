@@ -14,7 +14,10 @@ img, video, picture, iframe, svg, canvas,
 }
 
 export function applyDarkFilter(brightness: number): void {
-  document.documentElement.style.setProperty('--omni-brightness', String(brightness));
+  document.documentElement.style.setProperty(
+    '--omni-brightness',
+    String(brightness)
+  );
   if (document.getElementById(STYLE_ELEMENT_ID)) return;
   const style = document.createElement('style');
   style.id = STYLE_ELEMENT_ID;

@@ -6,7 +6,11 @@ export const DARK_DEFAULTS: DarkStorage = {
   sites: {},
 };
 
-export function setSiteMode(storage: OmniStorage, domain: string, mode: Mode): OmniStorage {
+export function setSiteMode(
+  storage: OmniStorage,
+  domain: string,
+  mode: Mode
+): OmniStorage {
   const sites = { ...storage.modules.dark.sites };
   if (mode === 'default') {
     delete sites[domain];
@@ -22,7 +26,10 @@ export function setSiteMode(storage: OmniStorage, domain: string, mode: Mode): O
   };
 }
 
-export function setDefaultMode(storage: OmniStorage, mode: 'dark' | 'light'): OmniStorage {
+export function setDefaultMode(
+  storage: OmniStorage,
+  mode: 'dark' | 'light'
+): OmniStorage {
   return {
     ...storage,
     modules: {
@@ -32,7 +39,10 @@ export function setDefaultMode(storage: OmniStorage, mode: 'dark' | 'light'): Om
   };
 }
 
-export function setBrightness(storage: OmniStorage, value: number): OmniStorage {
+export function setBrightness(
+  storage: OmniStorage,
+  value: number
+): OmniStorage {
   const clamped = Math.min(1.0, Math.max(0.5, value));
   return {
     ...storage,

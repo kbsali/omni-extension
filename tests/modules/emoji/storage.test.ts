@@ -1,6 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { EMOJI_DEFAULTS, RECENTS_MAX } from '../../../src/modules/emoji/storage';
+import { describe, expect, it } from 'vitest';
+
 import { DEFAULT_STORAGE } from '../../../src/core/storage';
+import {
+  EMOJI_DEFAULTS,
+  RECENTS_MAX,
+} from '../../../src/modules/emoji/storage';
 
 describe('modules/emoji/storage', () => {
   it('EMOJI_DEFAULTS has an empty recents array', () => {

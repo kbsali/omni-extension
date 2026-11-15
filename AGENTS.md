@@ -39,6 +39,6 @@
 - The manifest `version` comes from `package.json`. A release bumps `package.json` only
 - `tests/setup.ts` stubs `chrome` with sinon-chrome and flushes it before each test: it has no `chrome.storage.session` (see `tests/core/session.test.ts` for a stub)
 - Permissions: `<all_urls>` host access already exposes `tab.url` and cookie access, so `tabs`, `activeTab` and `scripting` are not requested
-- `*.svelte` is ignored by `bun fmt` and oxlint; only `svelte-check` covers it
+- `*.svelte` is ignored by `bun fmt`; oxlint lints its `<script>` blocks and `svelte-check` type-checks it
 - Coverage only counts `src/core/**` and the `service.ts`, `storage.ts` and `css.ts` files of each module
 - Pinned on purpose: `typescript` 6 (svelte-check breaks on 7) and `@crxjs/vite-plugin` 2.x (3.0 not adopted yet). Check again before bumping either

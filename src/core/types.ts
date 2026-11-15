@@ -1,4 +1,5 @@
 import type { Component } from 'svelte';
+
 import type { CookiesStorage } from '../modules/cookies/storage';
 import type { EmojiStorage } from '../modules/emoji/storage';
 

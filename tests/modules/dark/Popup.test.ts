@@ -1,18 +1,21 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, fireEvent } from '@testing-library/svelte';
-import Popup from '../../../src/modules/dark/Popup.svelte';
+import { fireEvent, render } from '@testing-library/svelte';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { DEFAULT_STORAGE } from '../../../src/core/storage';
+import Popup from '../../../src/modules/dark/Popup.svelte';
 
 declare const chrome: any;
 
 describe('Dark Popup', () => {
   beforeEach(() => {
-    chrome.storage.sync.get.callsFake(() => Promise.resolve({ omni: DEFAULT_STORAGE }));
+    chrome.storage.sync.get.callsFake(() =>
+      Promise.resolve({ omni: DEFAULT_STORAGE })
+    );
     chrome.storage.sync.set.callsFake(() => Promise.resolve());
     chrome.storage.local.get.callsFake(() => Promise.resolve({}));
     chrome.storage.local.set.callsFake(() => Promise.resolve());
     chrome.tabs.query.callsFake(() =>
-      Promise.resolve([{ id: 1, url: 'https://github.com/kevin/repo' }]),
+      Promise.resolve([{ id: 1, url: 'https://github.com/kevin/repo' }])
     );
   });
 

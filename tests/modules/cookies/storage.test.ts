@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { COOKIES_DEFAULTS } from '../../../src/modules/cookies/storage';
+import { describe, expect, it } from 'vitest';
+
 import { DEFAULT_STORAGE } from '../../../src/core/storage';
+import { COOKIES_DEFAULTS } from '../../../src/modules/cookies/storage';
 
 describe('modules/cookies/storage', () => {
   it('COOKIES_DEFAULTS is an empty object', () => {
