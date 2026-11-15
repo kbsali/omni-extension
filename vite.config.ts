@@ -16,25 +16,6 @@ export default defineConfig({
       '@modules': resolve(__dirname, 'src/modules'),
     },
   },
-  build: {
-    rollupOptions: {
-      input: {
-        // Dark content script was once registered at runtime via
-        // chrome.scripting.registerContentScripts, which needed a stable,
-        // hash-free path in dist/. Since a7d94de it is declared statically in
-        // manifest.config.ts; this explicit input predates that switch.
-        'src/modules/dark/content': 'src/modules/dark/content.ts',
-      },
-      output: {
-        entryFileNames: (chunk) => {
-          if (chunk.name === 'src/modules/dark/content') {
-            return 'src/modules/dark/content.js';
-          }
-          return 'assets/[name]-[hash].js';
-        },
-      },
-    },
-  },
   test: {
     globals: true,
     environment: 'happy-dom',
