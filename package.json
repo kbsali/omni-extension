@@ -17,7 +17,7 @@
     "fix": "oxlint --fix && bun fmt"
   },
   "dependencies": {
-    "emojibase-data": "^17.0.0",
+    "emojibase-data": "^18.0.0",
     "tldts": "^7.4.19"
   },
   "devDependencies": {
