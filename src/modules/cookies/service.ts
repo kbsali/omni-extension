@@ -1,5 +1,5 @@
 export function buildCookieUrl(
-  c: Pick<chrome.cookies.Cookie, 'domain' | 'path' | 'secure'>,
+  c: Pick<chrome.cookies.Cookie, 'domain' | 'path' | 'secure'>
 ): string {
   const scheme = c.secure ? 'https' : 'http';
   const host = c.domain.startsWith('.') ? c.domain.slice(1) : c.domain;
@@ -35,7 +35,9 @@ export function toExportFilename(domain: string, date: Date): string {
   return `cookies-${domain}-${y}-${m}-${d}.json`;
 }
 
-export function toExportJson(cookies: readonly chrome.cookies.Cookie[]): string {
+export function toExportJson(
+  cookies: readonly chrome.cookies.Cookie[]
+): string {
   const sorted = [...cookies].toSorted((a, b) => a.name.localeCompare(b.name));
   return JSON.stringify(sorted, null, 2);
 }

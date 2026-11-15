@@ -1,11 +1,13 @@
-import { test, expect } from './fixtures';
+import { expect, test } from './fixtures';
 
 test('toggling dark mode injects style element on the active site', async ({
   context,
   extensionId,
 }) => {
   const logs: string[] = [];
-  context.on('console', (msg) => logs.push(`[page:${msg.type()}] ${msg.text()}`));
+  context.on('console', (msg) =>
+    logs.push(`[page:${msg.type()}] ${msg.text()}`)
+  );
   for (const sw of context.serviceWorkers()) {
     sw.on('console', (msg) => logs.push(`[sw:${msg.type()}] ${msg.text()}`));
   }
@@ -27,7 +29,7 @@ test('toggling dark mode injects style element on the active site', async ({
     // the detached-window fallback does.
     const popup = await context.newPage();
     await popup.goto(
-      `chrome-extension://${extensionId}/src/popup/index.html?sourceUrl=${encodeURIComponent(target.url())}`,
+      `chrome-extension://${extensionId}/src/popup/index.html?sourceUrl=${encodeURIComponent(target.url())}`
     );
     await expect(popup.getByText('Current site: example.com')).toBeVisible();
     await popup.getByRole('switch').click();

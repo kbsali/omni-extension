@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { pushRecent, fuzzyFilter } from '../../../src/modules/emoji/service';
+import { describe, expect, it } from 'vitest';
+
+import { fuzzyFilter, pushRecent } from '../../../src/modules/emoji/service';
 import type { EmojiEntry } from '../../../src/modules/emoji/service';
 
 describe('modules/emoji/service — pushRecent', () => {
@@ -30,10 +31,26 @@ describe('modules/emoji/service — pushRecent', () => {
   });
 });
 
-const grinning: EmojiEntry = { char: '😀', name: 'grinning face', keywords: ['smile', 'happy'] };
-const grin: EmojiEntry = { char: '😬', name: 'grimacing face', keywords: ['grin', 'awkward'] };
-const cat: EmojiEntry = { char: '🐱', name: 'cat face', keywords: ['kitten', 'pet'] };
-const pizza: EmojiEntry = { char: '🍕', name: 'pizza', keywords: ['food', 'italian'] };
+const grinning: EmojiEntry = {
+  char: '😀',
+  name: 'grinning face',
+  keywords: ['smile', 'happy'],
+};
+const grin: EmojiEntry = {
+  char: '😬',
+  name: 'grimacing face',
+  keywords: ['grin', 'awkward'],
+};
+const cat: EmojiEntry = {
+  char: '🐱',
+  name: 'cat face',
+  keywords: ['kitten', 'pet'],
+};
+const pizza: EmojiEntry = {
+  char: '🍕',
+  name: 'pizza',
+  keywords: ['food', 'italian'],
+};
 
 const ALL: readonly EmojiEntry[] = [grinning, grin, cat, pizza];
 

@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { setPendingTab, consumePendingTab } from '../../src/core/session';
+import { beforeEach, describe, expect, it } from 'vitest';
+
+import { consumePendingTab, setPendingTab } from '../../src/core/session';
 
 // sinon-chrome has no chrome.storage.session, and @types/chrome marks it
 // read-only: install a stub through a mutable cast.
@@ -8,7 +9,8 @@ const sessionStore = new Map<string, unknown>();
 beforeEach(() => {
   sessionStore.clear();
   (chrome.storage as { session: typeof chrome.storage.session }).session = {
-    get: async (key: string) => (sessionStore.has(key) ? { [key]: sessionStore.get(key) } : {}),
+    get: async (key: string) =>
+      sessionStore.has(key) ? { [key]: sessionStore.get(key) } : {},
     set: async (obj: Record<string, unknown>) => {
       for (const [k, v] of Object.entries(obj)) sessionStore.set(k, v);
     },

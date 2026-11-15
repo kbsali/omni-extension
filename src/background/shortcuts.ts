@@ -1,6 +1,6 @@
 import { modules as registryModules } from '../core/registry';
-import { readStorage, writeStorage } from '../core/storage';
 import { setPendingTab } from '../core/session';
+import { readStorage, writeStorage } from '../core/storage';
 import type { OmniModule, ShortcutCtx } from '../core/types';
 
 async function getActiveTab(): Promise<chrome.tabs.Tab | undefined> {
@@ -19,26 +19,42 @@ function actionPopupUnsupported(): boolean {
 async function openPopupWindow(sourceUrl: string | undefined): Promise<void> {
   const popupPath = chrome.runtime.getManifest().action?.default_popup;
   if (!popupPath) {
-    console.error('[omni/shortcuts] no default_popup in manifest; cannot open window');
+    console.error(
+      '[omni/shortcuts] no default_popup in manifest; cannot open window'
+    );
     return;
   }
   // Read back by resolveTabUrl (core/tab.ts).
   const base = chrome.runtime.getURL(popupPath);
-  const url = sourceUrl ? `${base}?sourceUrl=${encodeURIComponent(sourceUrl)}` : base;
-  await chrome.windows.create({ url, type: 'popup', width: 360, height: 480, focused: true });
+  const url = sourceUrl
+    ? `${base}?sourceUrl=${encodeURIComponent(sourceUrl)}`
+    : base;
+  await chrome.windows.create({
+    url,
+    type: 'popup',
+    width: 360,
+    height: 480,
+    focused: true,
+  });
 }
 
 async function openPopupFocusedOn(moduleId: string): Promise<void> {
   console.log('[omni/shortcuts] openPopupFocusedOn:', moduleId);
   await setPendingTab(moduleId);
 
-  if (!actionPopupUnsupported() && typeof chrome.action?.openPopup === 'function') {
+  if (
+    !actionPopupUnsupported() &&
+    typeof chrome.action?.openPopup === 'function'
+  ) {
     try {
       await chrome.action.openPopup();
       console.log('[omni/shortcuts] openPopup resolved');
       return;
     } catch (err) {
-      console.error('[omni/shortcuts] openPopup threw, falling back to window:', err);
+      console.error(
+        '[omni/shortcuts] openPopup threw, falling back to window:',
+        err
+      );
     }
   }
   const tab = await getActiveTab();
@@ -56,15 +72,18 @@ export function makeCtx(): ShortcutCtx {
 
 export function buildDispatcher(
   modules: readonly OmniModule[],
-  ctx: ShortcutCtx,
+  ctx: ShortcutCtx
 ): (command: string) => Promise<void> {
   const byCommand = new Map(
     modules
       .filter(
-        (m): m is OmniModule & { shortcut: NonNullable<OmniModule['shortcut']> } =>
-          m.shortcut !== undefined,
+        (
+          m
+        ): m is OmniModule & {
+          shortcut: NonNullable<OmniModule['shortcut']>;
+        } => m.shortcut !== undefined
       )
-      .map((m) => [m.shortcut.commandName, m.shortcut]),
+      .map((m) => [m.shortcut.commandName, m.shortcut])
   );
 
   return async (command: string) => {

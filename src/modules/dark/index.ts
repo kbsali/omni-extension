@@ -1,8 +1,8 @@
-import type { OmniModule, ShortcutCtx } from '../../core/types';
 import { extractETLD1 } from '../../core/domain';
+import type { OmniModule, ShortcutCtx } from '../../core/types';
 import Popup from './Popup.svelte';
-import { setSiteMode } from './storage';
 import { nextSiteValueOnToggle } from './service';
+import { setSiteMode } from './storage';
 
 async function toggleDarkForCurrentSite(ctx: ShortcutCtx): Promise<void> {
   const tab = await ctx.getActiveTab();
@@ -11,7 +11,10 @@ async function toggleDarkForCurrentSite(ctx: ShortcutCtx): Promise<void> {
   if (!domain) return;
   const storage = await ctx.getStorage();
   const current = storage.modules.dark.sites[domain] ?? 'default';
-  const siteValue = nextSiteValueOnToggle(current, storage.modules.dark.defaultMode);
+  const siteValue = nextSiteValueOnToggle(
+    current,
+    storage.modules.dark.defaultMode
+  );
   await ctx.writeStorage(setSiteMode(storage, domain, siteValue));
 }
 

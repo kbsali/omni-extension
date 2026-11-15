@@ -1,5 +1,6 @@
-import { test as base, chromium, type BrowserContext } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
+
+import { type BrowserContext, chromium, test as base } from '@playwright/test';
 
 const pathToExtension = fileURLToPath(new URL('../../dist', import.meta.url));
 

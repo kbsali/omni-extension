@@ -15,7 +15,7 @@ function scoreString(
   query: string,
   exactBonus: number,
   startsWithBonus: number,
-  includesBonus: number,
+  includesBonus: number
 ): number {
   if (target === query) return exactBonus;
   if (target.startsWith(query)) return startsWithBonus;
@@ -58,13 +58,20 @@ function scoreEntry(entry: EmojiEntry, query: string): number {
   return best;
 }
 
-export function pushRecent(recents: readonly string[], char: string, max: number): string[] {
+export function pushRecent(
+  recents: readonly string[],
+  char: string,
+  max: number
+): string[] {
   const withoutChar = recents.filter((c) => c !== char);
   const next = [char, ...withoutChar];
   return next.slice(0, max);
 }
 
-export function fuzzyFilter(query: string, entries: readonly EmojiEntry[]): EmojiEntry[] {
+export function fuzzyFilter(
+  query: string,
+  entries: readonly EmojiEntry[]
+): EmojiEntry[] {
   const q = query.trim().toLowerCase();
   if (q === '') return [...entries];
 

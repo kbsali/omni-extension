@@ -1,11 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import {
-  readStorage,
-  writeStorage,
+  DEFAULT_STORAGE,
   migrateSites,
   onStorageChange,
-  DEFAULT_STORAGE,
+  readStorage,
   SITES_KEY,
+  writeStorage,
 } from '../../src/core/storage';
 
 declare const chrome: any;
@@ -14,7 +15,8 @@ let synced: Record<string, unknown>;
 let local: Record<string, unknown>;
 
 const area = (store: () => Record<string, unknown>) => ({
-  get: (key: string) => Promise.resolve(key in store() ? { [key]: store()[key] } : {}),
+  get: (key: string) =>
+    Promise.resolve(key in store() ? { [key]: store()[key] } : {}),
   set: (obj: Record<string, unknown>) => {
     Object.assign(store(), obj);
     return Promise.resolve();
@@ -39,7 +41,10 @@ const darkOnly = (dark: object) => ({ version: 1, modules: { dark } });
 const listen = () => {
   const cb = vi.fn();
   onStorageChange(cb);
-  return { cb, listener: chrome.storage.onChanged.addListener.firstCall.args[0] };
+  return {
+    cb,
+    listener: chrome.storage.onChanged.addListener.firstCall.args[0],
+  };
 };
 
 describe('core/storage', () => {
@@ -51,12 +56,18 @@ describe('core/storage', () => {
     it('fills fields missing from an older stored module', async () => {
       synced.omni = darkOnly({ brightness: 0.9 });
       const storage = await readStorage();
-      expect(storage.modules.dark).toEqual({ ...DEFAULT_STORAGE.modules.dark, brightness: 0.9 });
+      expect(storage.modules.dark).toEqual({
+        ...DEFAULT_STORAGE.modules.dark,
+        brightness: 0.9,
+      });
       expect(storage.modules.emoji).toEqual(DEFAULT_STORAGE.modules.emoji);
     });
 
     it('takes sites from storage.local', async () => {
-      synced.omni = darkOnly({ defaultMode: 'dark', sites: { 'old.com': 'dark' } });
+      synced.omni = darkOnly({
+        defaultMode: 'dark',
+        sites: { 'old.com': 'dark' },
+      });
       local[SITES_KEY] = { 'a.com': 'light' };
       const { dark } = (await readStorage()).modules;
       expect(dark.sites).toEqual({ 'a.com': 'light' });
@@ -65,7 +76,9 @@ describe('core/storage', () => {
 
     it('falls back to sites an older version synced', async () => {
       synced.omni = darkOnly({ sites: { 'old.com': 'dark' } });
-      expect((await readStorage()).modules.dark.sites).toEqual({ 'old.com': 'dark' });
+      expect((await readStorage()).modules.dark.sites).toEqual({
+        'old.com': 'dark',
+      });
     });
   });
 
@@ -77,7 +90,10 @@ describe('core/storage', () => {
       expect(local[SITES_KEY]).toEqual({ 'a.com': 'dark' });
       expect(synced.omni).toEqual({
         ...DEFAULT_STORAGE,
-        modules: { ...DEFAULT_STORAGE.modules, dark: { defaultMode: 'light', brightness: 1 } },
+        modules: {
+          ...DEFAULT_STORAGE.modules,
+          dark: { defaultMode: 'light', brightness: 1 },
+        },
       });
       expect(await readStorage()).toEqual(storage);
     });
@@ -113,7 +129,9 @@ describe('core/storage', () => {
       local[SITES_KEY] = { 'a.com': 'dark' };
       listener({ [SITES_KEY]: {} }, 'local');
       await vi.waitFor(() => expect(cb).toHaveBeenCalled());
-      expect(cb.mock.lastCall![0].modules.dark.sites).toEqual({ 'a.com': 'dark' });
+      expect(cb.mock.lastCall![0].modules.dark.sites).toEqual({
+        'a.com': 'dark',
+      });
     });
 
     it('ignores unrelated keys and areas', async () => {

@@ -1,8 +1,12 @@
-import { describe, it, expect } from 'vitest';
-import { resolveMode, nextSiteValueOnToggle } from '../../../src/modules/dark/service';
-import { COOKIES_DEFAULTS } from '../../../src/modules/cookies/storage';
-import { EMOJI_DEFAULTS } from '../../../src/modules/emoji/storage';
+import { describe, expect, it } from 'vitest';
+
 import type { OmniStorage } from '../../../src/core/types';
+import { COOKIES_DEFAULTS } from '../../../src/modules/cookies/storage';
+import {
+  nextSiteValueOnToggle,
+  resolveMode,
+} from '../../../src/modules/dark/service';
+import { EMOJI_DEFAULTS } from '../../../src/modules/emoji/storage';
 
 const baseStorage = (): OmniStorage => ({
   version: 1,

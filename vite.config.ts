@@ -1,7 +1,8 @@
-import { defineConfig } from 'vitest/config';
+import { crx } from '@crxjs/vite-plugin';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { svelteTesting } from '@testing-library/svelte/vite';
-import { crx } from '@crxjs/vite-plugin';
+import { defineConfig } from 'vitest/config';
+
 import manifest from './manifest.config.ts';
 
 export default defineConfig({

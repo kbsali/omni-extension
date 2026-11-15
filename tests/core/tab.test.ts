@@ -1,11 +1,14 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import { resolveTabUrl } from '../../src/core/tab';
 
 declare const chrome: any;
 
 describe('core/tab — resolveTabUrl', () => {
   beforeEach(() => {
-    chrome.tabs.query.callsFake(() => Promise.resolve([{ id: 1, url: 'https://github.com/a' }]));
+    chrome.tabs.query.callsFake(() =>
+      Promise.resolve([{ id: 1, url: 'https://github.com/a' }])
+    );
   });
 
   afterEach(() => {
@@ -17,7 +20,11 @@ describe('core/tab — resolveTabUrl', () => {
   });
 
   it('prefers the sourceUrl query parameter', async () => {
-    history.replaceState(null, '', `?sourceUrl=${encodeURIComponent('https://example.com/x?y=1')}`);
+    history.replaceState(
+      null,
+      '',
+      `?sourceUrl=${encodeURIComponent('https://example.com/x?y=1')}`
+    );
     expect(await resolveTabUrl()).toBe('https://example.com/x?y=1');
     expect(chrome.tabs.query.called).toBe(false);
   });
