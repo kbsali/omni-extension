@@ -22,9 +22,7 @@ async function openPopupWindow(sourceUrl: string | undefined): Promise<void> {
     console.error('[omni/shortcuts] no default_popup in manifest; cannot open window');
     return;
   }
-  // A detached window's currentWindow is itself, so popups that need the active
-  // site (cookies) can't query it. Pass the source tab URL through the query
-  // string; the popup uses it when present and falls back to currentWindow.
+  // Read back by resolveTabUrl (core/tab.ts).
   const base = chrome.runtime.getURL(popupPath);
   const url = sourceUrl ? `${base}?sourceUrl=${encodeURIComponent(sourceUrl)}` : base;
   await chrome.windows.create({ url, type: 'popup', width: 360, height: 480, focused: true });

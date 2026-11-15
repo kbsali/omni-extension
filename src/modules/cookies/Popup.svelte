@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { extractETLD1 } from '../../core/domain';
+  import { resolveTabUrl } from '../../core/tab';
   import {
     buildCookieUrl,
     parseExpires,
@@ -41,15 +42,6 @@
     } finally {
       loading = false;
     }
-  }
-
-  async function resolveTabUrl(): Promise<string | null> {
-    // Opened as a detached window (Vivaldi shortcut fallback): the source site
-    // URL is passed via query string, since currentWindow is the popup itself.
-    const passed = new URLSearchParams(location.search).get('sourceUrl');
-    if (passed) return passed;
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    return tab?.url ?? null;
   }
 
   onMount(async () => {

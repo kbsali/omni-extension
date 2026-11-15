@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { readStorage, writeStorage, DEFAULT_STORAGE } from '../../core/storage';
   import { extractETLD1 } from '../../core/domain';
+  import { resolveTabUrl } from '../../core/tab';
   import { setSiteMode, setDefaultMode, setBrightness } from './storage';
   import { resolveMode, nextSiteValueOnToggle } from './service';
   import type { OmniStorage } from '../../core/types';
@@ -11,8 +12,8 @@
 
   onMount(async () => {
     storage = await readStorage();
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    currentDomain = tab?.url ? extractETLD1(tab.url) : null;
+    const url = await resolveTabUrl();
+    currentDomain = url ? extractETLD1(url) : null;
   });
 
   const effectiveMode = $derived(
