@@ -1,7 +1,7 @@
 import { buildDarkCss, STYLE_ELEMENT_ID } from './css';
 import { extractETLD1 } from '../../core/domain';
 import { resolveMode } from './service';
-import { DEFAULT_STORAGE, STORAGE_KEY, onStorageChange } from '../../core/storage';
+import { STORAGE_KEY, onStorageChange, withDefaults } from '../../core/storage';
 import type { OmniStorage } from '../../core/types';
 
 // Runs on every page: no console output here, it would land in the site's console.
@@ -37,7 +37,7 @@ if (typeof chrome !== 'undefined' && chrome.storage?.sync) {
   const initial = chrome.storage.sync.get(STORAGE_KEY) as unknown;
   if (initial && typeof (initial as Promise<unknown>).then === 'function') {
     void (initial as Promise<Record<string, OmniStorage | undefined>>).then((result) => {
-      reconcileFromStorage(result[STORAGE_KEY] ?? DEFAULT_STORAGE);
+      reconcileFromStorage(withDefaults(result[STORAGE_KEY]));
     });
   }
   onStorageChange(reconcileFromStorage);

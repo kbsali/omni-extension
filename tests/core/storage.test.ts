@@ -25,7 +25,21 @@ describe('core/storage', () => {
       };
       chrome.storage.sync.get.callsFake(() => Promise.resolve({ omni: stored }));
       const storage = await readStorage();
-      expect(storage).toEqual(stored);
+      expect(storage).toEqual({
+        ...DEFAULT_STORAGE,
+        modules: { ...DEFAULT_STORAGE.modules, dark: stored.modules.dark },
+      });
+    });
+
+    it('fills fields missing from an older stored module', async () => {
+      const stored = { version: 1, modules: { dark: { sites: { 'a.com': 'dark' } } } };
+      chrome.storage.sync.get.callsFake(() => Promise.resolve({ omni: stored }));
+      const storage = await readStorage();
+      expect(storage.modules.dark).toEqual({
+        ...DEFAULT_STORAGE.modules.dark,
+        sites: { 'a.com': 'dark' },
+      });
+      expect(storage.modules.emoji).toEqual(DEFAULT_STORAGE.modules.emoji);
     });
   });
 

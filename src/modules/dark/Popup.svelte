@@ -9,6 +9,7 @@
 
   let storage = $state<OmniStorage>(DEFAULT_STORAGE);
   let currentDomain = $state<string | null>(null);
+  let writeError = $state<string | null>(null);
 
   onMount(async () => {
     storage = await readStorage();
@@ -24,8 +25,15 @@
   // resolves would otherwise write DEFAULT_STORAGE over the user's settings, and a
   // shortcut toggle or another synced device would be reverted.
   async function update(change: (s: OmniStorage) => OmniStorage) {
-    storage = change(await readStorage());
-    await writeStorage(storage);
+    try {
+      storage = change(await readStorage());
+      await writeStorage(storage);
+      writeError = null;
+    } catch (err) {
+      // Typically the 8 KB sync quota, see writeStorage.
+      writeError = `Not saved: ${err instanceof Error ? err.message : String(err)}`;
+      storage = await readStorage();
+    }
   }
 
   function onToggleSite() {
@@ -91,6 +99,10 @@
     />
     <span>{Math.round(storage.modules.dark.brightness * 100)}%</span>
   </label>
+
+  {#if writeError}
+    <div class="error" role="alert">{writeError}</div>
+  {/if}
 </div>
 
 <style>
@@ -111,4 +123,5 @@
   .btn { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #444; background: transparent; color: inherit; cursor: pointer; }
   .brightness { display: flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 13px; }
   .brightness input { flex: 1; }
+  .error { margin-top: 12px; color: #f77; font-size: 12px; }
 </style>

@@ -40,7 +40,7 @@
 
   onMount(async () => {
     try {
-      recents = (await readStorage()).modules.emoji?.recents ?? [];
+      recents = (await readStorage()).modules.emoji.recents;
     } catch (err) {
       console.error('[omni/emoji] reading recents failed:', err);
     }
@@ -52,7 +52,7 @@
     // Best-effort: the copy already succeeded, so log and still close.
     try {
       const storage = await readStorage();
-      const next = pushRecent(storage.modules.emoji?.recents ?? [], char, RECENTS_MAX);
+      const next = pushRecent(storage.modules.emoji.recents, char, RECENTS_MAX);
       await writeStorage({ ...storage, modules: { ...storage.modules, emoji: { recents: next } } });
     } catch (err) {
       console.error('[omni/emoji] saving recents failed:', err);
