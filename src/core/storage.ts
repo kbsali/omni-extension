@@ -1,6 +1,7 @@
 import { COOKIES_DEFAULTS } from '../modules/cookies/storage';
 import { DARK_DEFAULTS } from '../modules/dark/storage';
 import { EMOJI_DEFAULTS } from '../modules/emoji/storage';
+import { NTFY_DEFAULTS } from '../modules/ntfy/storage';
 import type { DarkStorage, OmniStorage } from './types';
 
 export const STORAGE_KEY = 'omni';
@@ -14,6 +15,7 @@ export const DEFAULT_STORAGE: OmniStorage = {
     dark: { ...DARK_DEFAULTS },
     cookies: { ...COOKIES_DEFAULTS },
     emoji: { ...EMOJI_DEFAULTS },
+    ntfy: { ...NTFY_DEFAULTS },
   },
 };
 
@@ -29,6 +31,7 @@ export function withDefaults(stored: StoredOmni): OmniStorage {
       dark: { ...DEFAULT_STORAGE.modules.dark, ...m?.dark },
       cookies: { ...DEFAULT_STORAGE.modules.cookies, ...m?.cookies },
       emoji: { ...DEFAULT_STORAGE.modules.emoji, ...m?.emoji },
+      ntfy: { ...DEFAULT_STORAGE.modules.ntfy, ...m?.ntfy },
     },
   };
 }

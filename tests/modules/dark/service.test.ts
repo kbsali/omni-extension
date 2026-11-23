@@ -7,6 +7,7 @@ import {
   resolveMode,
 } from '../../../src/modules/dark/service';
 import { EMOJI_DEFAULTS } from '../../../src/modules/emoji/storage';
+import { NTFY_DEFAULTS } from '../../../src/modules/ntfy/storage';
 
 const baseStorage = (): OmniStorage => ({
   version: 1,
@@ -14,6 +15,7 @@ const baseStorage = (): OmniStorage => ({
     dark: { defaultMode: 'light', brightness: 1.0, sites: {} },
     cookies: { ...COOKIES_DEFAULTS },
     emoji: { ...EMOJI_DEFAULTS },
+    ntfy: { ...NTFY_DEFAULTS },
   },
 });
 

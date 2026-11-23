@@ -25,6 +25,7 @@
 - State: `src/core/storage.ts`. Settings live in 1 `chrome.storage.sync` key, `omni` (8 KB cap); the growing dark `sites` map lives in `chrome.storage.local` under `omni.darkSites`. Always go through `readStorage`/`writeStorage`/`onStorageChange`, which split and join the 2 areas and fill defaults. Popups apply a change to a fresh `readStorage()`, never to a snapshot taken at mount
 - `src/modules/dark/content.ts` is the content-script entry (every page, `document_start`): side effects only, no `console` output; its testable helpers live in `css.ts` and `service.ts`
 - Design specs and plans live in `docs/superpowers/specs/` and `docs/superpowers/plans/`; read them before changing a module
+- Open work lives in `TODO.md`: read it first, tick and add items in the same commit as the work
 
 ## Adding a module
 
