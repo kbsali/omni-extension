@@ -2,6 +2,7 @@ import type { Component } from 'svelte';
 
 import type { CookiesStorage } from '../modules/cookies/storage';
 import type { EmojiStorage } from '../modules/emoji/storage';
+import type { NtfyStorage } from '../modules/ntfy/storage';
 
 export type Mode = 'dark' | 'light' | 'default';
 
@@ -17,6 +18,7 @@ export interface OmniStorage {
     dark: DarkStorage;
     cookies: CookiesStorage;
     emoji: EmojiStorage;
+    ntfy: NtfyStorage;
   };
 }
 

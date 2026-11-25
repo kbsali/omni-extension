@@ -6,7 +6,7 @@ export default defineManifest({
   manifest_version: 3,
   name: 'Omni Extension',
   version: pkg.version,
-  description: 'Dark mode, cookie editor and emoji picker',
+  description: 'Dark mode, cookie editor, emoji picker and ntfy messages',
   // The <all_urls> host permission already exposes tab.url: no 'tabs' or 'activeTab'.
   permissions: ['storage', 'cookies'],
   host_permissions: ['<all_urls>'],

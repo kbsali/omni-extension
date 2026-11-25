@@ -51,6 +51,10 @@ Lightweight cookie viewer/editor scoped to the current tab's eTLD+1. See [`src/m
 
 Keyboard-driven emoji picker. Type to fuzzy-filter ~1900 emojis, arrow-key to navigate, Enter to copy. Recently used emojis are remembered and shown first. See [`src/modules/emoji/README.md`](src/modules/emoji/README.md).
 
+### ntfy
+
+Lists the messages of an ntfy topic (`kbsali-all` by default, server and access token set in the tab's Settings). URLs open in a new tab, attachments download. See [`src/modules/ntfy/README.md`](src/modules/ntfy/README.md).
+
 ### Keyboard shortcuts
 
 Each module ships a keyboard shortcut. Chrome lets you remap them at `chrome://extensions/shortcuts`.
@@ -69,7 +73,7 @@ Chrome caps user-configurable shortcuts at 4 per extension. One slot is free for
 
 - Dark mode uses `filter: invert(1) hue-rotate(180deg)`, not a color-aware dark mode.
 - Dark mode per-site rules use eTLD+1 granularity.
-- E2E coverage is limited to dark mode (`tests/e2e/dark-mode.spec.ts`).
+- E2E coverage is limited to dark mode and the ntfy list (`tests/e2e/`).
 - Where `chrome.action.openPopup()` is unavailable or a no-op (Chrome <127, Vivaldi), the emoji and cookies shortcuts open the popup in a small detached window instead.
 
 ## Architecture
