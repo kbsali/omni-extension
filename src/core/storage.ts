@@ -30,7 +30,10 @@ export function withDefaults(stored: StoredOmni): OmniStorage {
     modules: {
       dark: { ...DEFAULT_STORAGE.modules.dark, ...m?.dark },
       cookies: { ...DEFAULT_STORAGE.modules.cookies, ...m?.cookies },
-      emoji: { ...DEFAULT_STORAGE.modules.emoji, ...m?.emoji },
+      emoji: {
+        // Older versions saved the proxied recents array as {}.
+        recents: Array.isArray(m?.emoji?.recents) ? m.emoji.recents : [],
+      },
       ntfy: { ...DEFAULT_STORAGE.modules.ntfy, ...m?.ntfy },
     },
   };
@@ -52,7 +55,10 @@ export async function readStorage(): Promise<OmniStorage> {
   };
 }
 
-export async function writeStorage(storage: OmniStorage): Promise<void> {
+// Popups hold the storage in Svelte $state, whose arrays are proxies that
+// chrome.storage saves as {}: write a plain JSON copy.
+export async function writeStorage(input: OmniStorage): Promise<void> {
+  const storage = JSON.parse(JSON.stringify(input)) as OmniStorage;
   const { sites, ...dark } = storage.modules.dark;
   await Promise.all([
     chrome.storage.sync.set({

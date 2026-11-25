@@ -82,6 +82,11 @@ describe('core/storage', () => {
     });
   });
 
+  it('repairs emoji recents an older version saved as {}', async () => {
+    synced.omni = { version: 1, modules: { emoji: { recents: {} } } };
+    expect((await readStorage()).modules.emoji.recents).toEqual([]);
+  });
+
   describe('writeStorage', () => {
     it('writes sites to storage.local and the rest to sync', async () => {
       const storage = structuredClone(DEFAULT_STORAGE);
@@ -96,6 +101,16 @@ describe('core/storage', () => {
         },
       });
       expect(await readStorage()).toEqual(storage);
+    });
+
+    it('writes plain arrays, not the proxies a Svelte $state holds', async () => {
+      const storage = structuredClone(DEFAULT_STORAGE);
+      const recents = new Proxy(['😀'], {});
+      storage.modules.emoji.recents = recents;
+      await writeStorage(storage);
+      const saved = (synced.omni as typeof storage).modules.emoji.recents;
+      expect(saved).not.toBe(recents);
+      expect(saved).toEqual(['😀']);
     });
   });
 
