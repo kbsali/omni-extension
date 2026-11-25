@@ -25,8 +25,22 @@ export default defineManifest({
     service_worker: 'src/background/index.ts',
     type: 'module',
   },
+  // Drawn by hand in public/icons/icon.svg; the PNGs are rendered from it
+  // with rsvg-convert.
+  icons: {
+    16: 'icons/icon-16.png',
+    32: 'icons/icon-32.png',
+    48: 'icons/icon-48.png',
+    128: 'icons/icon-128.png',
+  },
   action: {
     default_popup: 'src/popup/index.html',
+    default_icon: {
+      16: 'icons/icon-16.png',
+      32: 'icons/icon-32.png',
+      48: 'icons/icon-48.png',
+      128: 'icons/icon-128.png',
+    },
   },
   commands: {
     'open-emoji': {

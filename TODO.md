@@ -8,7 +8,10 @@
 ## PDF (article export) module
 
 - [ ] Kevin: reload the extension, export the Le Télégramme Beyou article, check the PDF (full subscriber text, photos)
+- [ ] Kevin: reload the extension, re-export the article, check the new sans-serif layout and the toolbar icon
+- [ ] Kevin: pick the icon: c-orbit is wired in; a-ring and b-grid are on the contact sheet in the PR
 - [x] 2026-11-25 PDF tab exports the current page's article through the print dialog (feat/article-pdf)
+- [x] 2026-11-25 Sans-serif (Inter) layout, cleaner extraction, extension icon (feat/article-pdf)
 
 ## Dependencies
 
