@@ -1,4 +1,13 @@
-import { extractArticle, promoteLazyImages, readTabHtml } from './service';
+import '@fontsource-variable/inter/wght.css';
+import '@fontsource-variable/inter/wght-italic.css';
+
+import {
+  dropSmallImages,
+  extractArticle,
+  promoteLazyImages,
+  readTabHtml,
+  tidyArticle,
+} from './service';
 
 const status = document.querySelector<HTMLElement>('.status')!;
 
@@ -24,6 +33,12 @@ function imagesSettled(): Promise<unknown> {
   );
 }
 
+function formatDate(iso: string | null, lang: string | null): string | null {
+  const date = iso ? new Date(iso) : null;
+  if (!date || Number.isNaN(date.getTime())) return null;
+  return date.toLocaleDateString(lang ?? undefined, { dateStyle: 'long' });
+}
+
 async function run(): Promise<void> {
   const params = new URLSearchParams(location.search);
   const tabId = Number(params.get('tabId'));
@@ -33,11 +48,23 @@ async function run(): Promise<void> {
   const article = extractArticle(await readTabHtml(tabId), url);
   if (!article) throw new Error('No article found on this page');
 
-  document.title = article.title;
+  const body = new DOMParser().parseFromString(
+    article.content,
+    'text/html'
+  ).body;
+  promoteLazyImages(body);
+  const title = tidyArticle(body, article.title);
+  const main = document.createElement('main');
+  main.append(...body.childNodes);
+
+  document.title = title;
+  // Hyphenation and quote marks follow the article's language.
+  if (article.lang) document.documentElement.lang = article.lang;
 
   const header = document.createElement('header');
-  header.append(el('h1', article.title));
-  const meta = [article.siteName, article.byline, article.publishedTime]
+  if (article.siteName) header.append(el('p', article.siteName, 'site'));
+  header.append(el('h1', title));
+  const meta = [article.byline, formatDate(article.publishedTime, article.lang)]
     .filter(Boolean)
     .join(' · ');
   if (meta) header.append(el('p', meta, 'meta'));
@@ -47,19 +74,13 @@ async function run(): Promise<void> {
   source.append(link);
   header.append(source);
 
-  const body = new DOMParser().parseFromString(
-    article.content,
-    'text/html'
-  ).body;
-  promoteLazyImages(body);
-  const main = document.createElement('main');
-  main.append(...body.childNodes);
-
   document.body.append(header, main);
   status.remove();
 
-  await imagesSettled();
-  window.print();
+  await Promise.all([imagesSettled(), document.fonts.ready]);
+  dropSmallImages(main);
+  // ?noprint renders the page without the dialog, to check the layout.
+  if (!params.has('noprint')) window.print();
 }
 
 run().catch((err: unknown) => {

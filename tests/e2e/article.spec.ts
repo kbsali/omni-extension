@@ -10,17 +10,20 @@ const para = (n: number) =>
   ) + '</p>';
 
 const page = `<!doctype html><html lang="fr"><head><meta charset="utf-8">
-<title>Le skipper raconte sa longue convalescence | Le Journal</title></head><body>
+<title>Le skipper raconte sa longue convalescence | Le Journal</title>
+<style>.for-guests { display: none; }</style></head><body>
 <nav><a href="/">Accueil</a></nav>
 <div class="detail-article">
   <h1>Le skipper raconte sa longue convalescence</h1>
   <figure><img src="/photo.svg" alt="Photo"></figure>
-  ${[1, 2, 3, 4, 5, 6].map(para).join('')}
+  ${[1, 2, 3].map(para).join('')}
+  <p class="for-guests">Connectez-vous pour enregistrer cet article et le lire plus tard.</p>
+  ${[4, 5, 6].map(para).join('')}
 </div>
 <footer>Mentions légales</footer></body></html>`;
 
 const svg =
-  '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10"/></svg>';
+  '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200"><rect width="400" height="200"/></svg>';
 
 test('article export renders the article and opens the print dialog', async ({
   context,
@@ -65,6 +68,11 @@ test('article export renders the article and opens the print dialog', async ({
     );
     await expect(print.locator('main')).toContainText('Paragraphe 6');
     await expect(print.locator('main')).not.toContainText('Mentions légales');
+    await expect(print.locator('main')).not.toContainText('Connectez-vous');
+    await expect(print.locator('h1')).toHaveText(
+      'Le skipper raconte sa longue convalescence'
+    );
+    await expect(print.locator('main h2')).toHaveCount(0);
     await expect(print.locator('main img')).toHaveAttribute(
       'src',
       `http://127.0.0.1:${port}/photo.svg`

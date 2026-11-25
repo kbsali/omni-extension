@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  dropSmallImages,
   extractArticle,
   promoteLazyImages,
+  tidyArticle,
 } from '../../../src/modules/article/service';
 
 const para = (n: number) =>
@@ -53,5 +55,47 @@ describe('article/service', () => {
     expect(lazy!.getAttribute('src')).toBe('https://x.fr/real.jpg');
     expect(lazy!.hasAttribute('loading')).toBe(false);
     expect(plain!.getAttribute('src')).toBe('https://x.fr/a.jpg');
+  });
+
+  it('replaces a cut metadata title with the full first heading', () => {
+    const div = document.createElement('div');
+    div.innerHTML =
+      '<h2>Le skipper raconte  sa longue convalescence après la course</h2><p>Texte.</p>';
+    expect(tidyArticle(div, 'Le skipper raconte sa longue conva')).toBe(
+      'Le skipper raconte sa longue convalescence après la course'
+    );
+    expect(div.querySelector('h2')).toBeNull();
+  });
+
+  it('keeps an unrelated first heading and the given title', () => {
+    const div = document.createElement('div');
+    div.innerHTML = '<h2>Racontez-nous</h2><p>Texte.</p>';
+    expect(tidyArticle(div, 'Le skipper')).toBe('Le skipper');
+    expect(div.querySelector('h2')).not.toBeNull();
+  });
+
+  it('drops link-only blocks and keeps text with links', () => {
+    const div = document.createElement('div');
+    div.innerHTML = [
+      '<p><a href="/sources">Ajouter Le Journal à vos sources</a></p>',
+      '<a href="/autre"><h3>Lire aussi : autre article</h3></a>',
+      '<p>Un texte avec <a href="/x">un lien</a> au milieu de la phrase.</p>',
+    ].join('');
+    tidyArticle(div, 'Titre');
+    expect(div.textContent).not.toContain('Ajouter');
+    expect(div.textContent).not.toContain('Lire aussi');
+    expect(div.textContent).toContain('au milieu de la phrase');
+  });
+
+  it('drops small and broken images with their figure', () => {
+    const div = document.createElement('div');
+    div.innerHTML =
+      '<figure><img alt="author"><figcaption>Auteur</figcaption></figure><figure><img alt="photo"></figure>';
+    const [small, big] = div.querySelectorAll('img');
+    Object.defineProperty(small, 'naturalWidth', { value: 64 });
+    Object.defineProperty(big, 'naturalWidth', { value: 1200 });
+    dropSmallImages(div);
+    expect(div.querySelectorAll('figure')).toHaveLength(1);
+    expect(div.querySelector('img')!.alt).toBe('photo');
   });
 });
