@@ -42,4 +42,4 @@
 - Permissions: `<all_urls>` host access already exposes `tab.url` and cookie access, so `tabs`, `activeTab` and `scripting` are not requested
 - `*.svelte` is ignored by `bun fmt`; oxlint lints its `<script>` blocks and `svelte-check` type-checks it
 - Coverage only counts `src/core/**` and the `service.ts`, `storage.ts` and `css.ts` files of each module
-- Pinned on purpose: `typescript` 6 (svelte-check breaks on 7) and `@crxjs/vite-plugin` 2.x (3.0 not adopted yet). Check again before bumping either
+- Type-checking runs on TypeScript 7 through `svelte-check --tsgo`, which needs both versions installed: `typescript` stays on `~6` and TS 7 comes in as `@typescript/native` (`npm:typescript@7`). Bump `@typescript/native` for TS 7 updates; move `typescript` off 6 only once svelte-check drops that requirement
