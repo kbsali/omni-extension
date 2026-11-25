@@ -14,7 +14,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": ["chrome", "vitest/globals", "svelte"]
+    "types": ["chrome", "vitest/globals", "svelte", "vite/client"]
   },
   "include": ["src/**/*", "tests/**/*", "vite.config.ts", "manifest.config.ts"],
   "exclude": ["node_modules", "dist"]

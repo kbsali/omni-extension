@@ -7,6 +7,12 @@ import manifest from './manifest.config.ts';
 
 export default defineConfig({
   plugins: [svelte(), svelteTesting(), crx({ manifest })],
+  build: {
+    rollupOptions: {
+      // Opened with chrome.tabs.create, so the manifest does not reference it.
+      input: { 'article-print': 'src/modules/article/print.html' },
+    },
+  },
   test: {
     globals: true,
     environment: 'happy-dom',

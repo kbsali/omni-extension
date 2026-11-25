@@ -55,6 +55,10 @@ Keyboard-driven emoji picker. Type to fuzzy-filter ~1900 emojis, arrow-key to na
 
 Lists the messages of an ntfy topic (`kbsali-all` by default, server and access token set in the tab's Settings). URLs open in a new tab, attachments download. See [`src/modules/ntfy/README.md`](src/modules/ntfy/README.md).
 
+### PDF
+
+Exports the article of the current page (newspaper, blog) to PDF: extracts the main text from the live page, so subscriber-only content is kept, lays it out cleanly and opens the print dialog (pick "Save as PDF"). See [`src/modules/article/README.md`](src/modules/article/README.md).
+
 ### Keyboard shortcuts
 
 Each module ships a keyboard shortcut. Chrome lets you remap them at `chrome://extensions/shortcuts`.
@@ -73,7 +77,7 @@ Chrome caps user-configurable shortcuts at 4 per extension. One slot is free for
 
 - Dark mode uses `filter: invert(1) hue-rotate(180deg)`, not a color-aware dark mode.
 - Dark mode per-site rules use eTLD+1 granularity.
-- E2E coverage is limited to dark mode and the ntfy list (`tests/e2e/`).
+- E2E coverage is limited to dark mode, the ntfy list and the article export (`tests/e2e/`).
 - Where `chrome.action.openPopup()` is unavailable or a no-op (Chrome <127, Vivaldi), the emoji and cookies shortcuts open the popup in a small detached window instead.
 
 ## Architecture
