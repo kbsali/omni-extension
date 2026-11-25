@@ -3,7 +3,7 @@ import dataRaw from 'emojibase-data/en/data.json';
 import type { EmojiEntry } from './service';
 
 // Minimal local shape — avoids depending on the `emojibase` types package.
-// Field names match emojibase-data v17 (label, tags, order, group).
+// Field names match emojibase-data v17 and v18 (label, tags, order, group).
 interface EmojibaseEntry {
   emoji: string;
   label: string;
