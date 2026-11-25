@@ -6,9 +6,12 @@ export default defineManifest({
   manifest_version: 3,
   name: 'Omni Extension',
   version: pkg.version,
-  description: 'Dark mode, cookie editor, emoji picker and ntfy messages',
+  description:
+    'Dark mode, cookie editor, emoji picker, ntfy messages and article to PDF',
   // The <all_urls> host permission already exposes tab.url: no 'tabs' or 'activeTab'.
-  permissions: ['storage', 'cookies'],
+  // 'scripting' reads a tab's live DOM for the article export; with <all_urls>
+  // already granted it adds no install warning.
+  permissions: ['storage', 'cookies', 'scripting'],
   host_permissions: ['<all_urls>'],
   content_scripts: [
     {

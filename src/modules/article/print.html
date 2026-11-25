@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Article</title>
+    <style>
+      body {
+        margin: 0 auto;
+        padding: 24px 16px;
+        max-width: 720px;
+        background: #fff;
+        color: #111;
+        font:
+          17px/1.6 Georgia,
+          'Times New Roman',
+          serif;
+      }
+      header {
+        margin-bottom: 24px;
+        border-bottom: 1px solid #ccc;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 30px;
+        line-height: 1.2;
+      }
+      .meta,
+      .source {
+        color: #555;
+        font:
+          13px/1.4 system-ui,
+          sans-serif;
+      }
+      .source {
+        margin: 8px 0 16px;
+        overflow-wrap: anywhere;
+      }
+      a {
+        color: inherit;
+      }
+      img,
+      video,
+      iframe {
+        max-width: 100%;
+        height: auto;
+      }
+      figure {
+        margin: 16px 0;
+        break-inside: avoid;
+      }
+      figcaption {
+        color: #555;
+        font-size: 14px;
+      }
+      pre {
+        white-space: pre-wrap;
+      }
+      .status {
+        font-family: system-ui, sans-serif;
+      }
+      .status.error {
+        color: #b00020;
+      }
+      @media print {
+        body {
+          padding: 0;
+          max-width: none;
+        }
+        .status {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <p class="status">Extracting the article…</p>
+    <script type="module" src="./print.ts"></script>
+  </body>
+</html>
